@@ -64,7 +64,7 @@ public class LogConfigurator
     
     public static String DefaultLogFileDirPath = MyApplication.sharedInstance().getEspRootSDPath() + "/Log/";
     
-    public static final String DefaultLogFileName = "log";
+    public static final String DefaultLogFileName = "log.txt";
     
     public static final int DefaultMaxBackupSize = 200;
     

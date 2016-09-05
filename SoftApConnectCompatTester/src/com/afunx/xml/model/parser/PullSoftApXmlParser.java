@@ -84,7 +84,8 @@ public class PullSoftApXmlParser implements SoftApXmlParser {
 		serializer.endTag("", NODE_OBJECTS_KEY);
 		serializer.endDocument();
 		
-		return writer.toString();
+		String unformattedXml = writer.toString();
+		return XmlFormatter.format(unformattedXml);
 	}
 
 }

@@ -29,7 +29,7 @@ public class ConfigureLog4J
     {
         final LogConfigurator logConfigurator = new LogConfigurator();
         
-        boolean storeLog = false;
+        boolean storeLog = true;
         logConfigurator.setUseFileAppender(storeLog);
         
         logConfigurator.setFileName(LogConfigurator.DefaultLogFileDirPath + LogConfigurator.DefaultLogFileName);

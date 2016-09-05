@@ -96,7 +96,8 @@ public class DomSoftApXmlParser implements SoftApXmlParser {
         Result result = new StreamResult(writer);
         transformer.transform(source, result);
         
-		return writer.toString();
+        String unformattedXml = writer.toString();
+		return XmlFormatter.format(unformattedXml);
 	}
 
 }

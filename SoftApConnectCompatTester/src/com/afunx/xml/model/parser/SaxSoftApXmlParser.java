@@ -94,7 +94,8 @@ public class SaxSoftApXmlParser implements SoftApXmlParser {
         handler.endElement(uri, localName, NODE_OBJECTS_KEY);
         handler.endDocument();
         
-		return writer.toString();
+		String unformattedXml = writer.toString();
+		return XmlFormatter.format(unformattedXml);
 	}
 
 	private class MyHandler extends DefaultHandler {
