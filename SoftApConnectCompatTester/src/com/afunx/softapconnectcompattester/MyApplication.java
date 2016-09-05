@@ -6,6 +6,7 @@ import com.espressif.iot.log.InitLogger;
 
 import android.app.Application;
 import android.os.Environment;
+import android.util.Log;
 
 public class MyApplication extends Application {
 	
@@ -36,7 +37,7 @@ public class MyApplication extends Application {
         {
             path = Environment.getExternalStorageDirectory().toString() + "/Espressif/SoftApConnectCompatTester/";
         }
-        log.info("getEspRootSDPath() path="+path);
+        Log.i("MyApplication", "getEspRootSDPath() path="+path);
         return path;
     }
 }

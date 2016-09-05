@@ -11,6 +11,7 @@ import com.afunx.xml.model.parser.DomSoftApXmlParser;
 import com.afunx.xml.model.parser.PullSoftApXmlParser;
 import com.afunx.xml.model.parser.SaxSoftApXmlParser;
 import com.afunx.xml.model.parser.SoftApXmlParser;
+import com.afunx.xml.model.persistence.SoftApPersistentor;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -25,7 +26,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
 
+//		SoftApPersistentor.loadSoftAps();
 //		testXmlParser();
+		
 	}
 
 	private void testXmlParser() {
