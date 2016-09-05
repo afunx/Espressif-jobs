@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<softaps>
+    <softap>
+        <ssid>softap-wep-ssid</ssid>
+        <password>softap-wep-password</password>
+        <cipher-type>0</cipher-type>
+    </softap>
+    <softap>
+        <ssid>softap-wpa-ssid</ssid>
+        <password>softap-wpa-password</password>
+        <cipher-type>1</cipher-type>
+    </softap>
+    <softap>
+        <ssid>softap-open-ssid</ssid>
+        <password>softap-open-password</password>
+        <cipher-type>2</cipher-type>
+    </softap>
+    <softap>
+        <ssid>softap-invalid-ssid</ssid>
+        <password>softap-invalid-password</password>
+        <cipher-type>3</cipher-type>
+    </softap>
+</softaps>
