@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/tv_ssid_item"
@@ -33,8 +34,10 @@
         android:textSize="18sp" />
 
     <CheckBox
+        android:visibility="visible"
         android:id="@+id/cb_selected_item"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>
