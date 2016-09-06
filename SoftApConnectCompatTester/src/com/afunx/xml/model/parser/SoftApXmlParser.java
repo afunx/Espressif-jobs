@@ -20,4 +20,8 @@ public interface SoftApXmlParser {
 	public final String NODE_ATTR_KEY_PASSWORD = "password";
 	
 	public final String NODE_ATTR_KEY_CIPHER_TYPE = "cipher-type";
+	
+	public final String NODE_ATTR_KEY_DETAIL = "detail";
+	
+	public final String NODE_ATTR_KEY_SELECTED = "selected";
 }

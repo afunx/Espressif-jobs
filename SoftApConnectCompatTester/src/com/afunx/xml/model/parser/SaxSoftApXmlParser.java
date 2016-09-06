@@ -87,6 +87,18 @@ public class SaxSoftApXmlParser implements SoftApXmlParser {
         	handler.characters(ch, 0, ch.length);
         	handler.endElement(uri, localName, NODE_ATTR_KEY_CIPHER_TYPE);
         	
+        	// detail
+        	handler.startElement(uri, localName, NODE_ATTR_KEY_DETAIL, null);
+        	ch = String.valueOf(softap.getDetail()).toCharArray();
+        	handler.characters(ch, 0, ch.length);
+        	handler.endElement(uri, localName, NODE_ATTR_KEY_DETAIL);
+        	
+        	// selected
+        	handler.startElement(uri, localName, NODE_ATTR_KEY_SELECTED, null);
+        	ch = String.valueOf(softap.getIsSelected()).toCharArray();
+        	handler.characters(ch, 0, ch.length);
+        	handler.endElement(uri, localName, NODE_ATTR_KEY_SELECTED);
+        	
         	// sofap end
         	handler.endElement(uri, localName, NODE_OBJECT_KEY);
         }
@@ -143,6 +155,10 @@ public class SaxSoftApXmlParser implements SoftApXmlParser {
 				mSoftAp.setPassword(builder.toString());
 			} else if (localName.equals(NODE_ATTR_KEY_CIPHER_TYPE)) {
 				mSoftAp.setCipherType(Integer.parseInt(builder.toString()));
+			} else if (localName.equals(NODE_ATTR_KEY_DETAIL)) {
+				mSoftAp.setDetail(builder.toString());
+			} else if (localName.equals(NODE_ATTR_KEY_SELECTED)) {
+				mSoftAp.setIsSelected(Boolean.parseBoolean(builder.toString()));
 			}
 		}
 	}

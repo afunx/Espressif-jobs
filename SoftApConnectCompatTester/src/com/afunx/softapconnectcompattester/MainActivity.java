@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class MainActivity extends Activity {
 		private TextView tvSsidHolder;
 		private TextView tvPwdHolder;
 		private TextView tvCipherTypeHolder;
+		private TextView tvDetailHolder;
+		private CheckBox cbSelectedHolder;
 	}
 	
 	private class MyAdapter extends BaseAdapter {
@@ -76,6 +79,8 @@ public class MainActivity extends Activity {
 				holder.tvSsidHolder = (TextView) view.findViewById(R.id.tv_ssid_item);
 				holder.tvPwdHolder = (TextView) view.findViewById(R.id.tv_pwd_item);
 				holder.tvCipherTypeHolder = (TextView) view.findViewById(R.id.tv_cipher_type_item);
+				holder.tvDetailHolder = (TextView) view.findViewById(R.id.tv_detail_item);
+				holder.cbSelectedHolder = (CheckBox) view.findViewById(R.id.cb_selected_item);
 				view.setTag(holder);
 			} else {
 				view = convertView;
@@ -99,9 +104,9 @@ public class MainActivity extends Activity {
 			default:
 				holder.tvCipherTypeHolder.setText("INVALID");
 				break;
-				
 			}
-			
+			holder.tvDetailHolder.setText(softap.getDetail());
+			holder.cbSelectedHolder.setChecked(softap.getIsSelected());
 			return view;
 		}
 		

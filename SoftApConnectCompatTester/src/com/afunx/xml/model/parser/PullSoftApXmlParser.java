@@ -41,6 +41,12 @@ public class PullSoftApXmlParser implements SoftApXmlParser {
 				}   else if (parser.getName().equals(NODE_ATTR_KEY_CIPHER_TYPE)) {
 					eventType = parser.next();
 					softap.setCipherType(Integer.parseInt(parser.getText()));
+				}	else if (parser.getName().equals(NODE_ATTR_KEY_DETAIL)) {
+					eventType = parser.next();
+					softap.setDetail(parser.getText());
+				}  else if (parser.getName().equals(NODE_ATTR_KEY_SELECTED)) {
+					eventType = parser.next();
+					softap.setIsSelected(Boolean.parseBoolean(parser.getText()));
 				}
 				break;
 			case XmlPullParser.END_TAG:
@@ -77,6 +83,14 @@ public class PullSoftApXmlParser implements SoftApXmlParser {
 			serializer.startTag("", NODE_ATTR_KEY_CIPHER_TYPE);
 			serializer.text(softap.getCipherType()+"");
 			serializer.endTag("", NODE_ATTR_KEY_CIPHER_TYPE);
+			
+			serializer.startTag("", NODE_ATTR_KEY_DETAIL);
+			serializer.text(softap.getDetail());
+			serializer.endTag("", NODE_ATTR_KEY_DETAIL);
+			
+			serializer.startTag("", NODE_ATTR_KEY_SELECTED);
+			serializer.text(softap.getIsSelected()+"");
+			serializer.endTag("", NODE_ATTR_KEY_SELECTED);
 			
 			serializer.endTag("", NODE_OBJECT_KEY);
 		}

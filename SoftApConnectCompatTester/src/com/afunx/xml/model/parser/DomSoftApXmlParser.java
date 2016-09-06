@@ -51,6 +51,12 @@ public class DomSoftApXmlParser implements SoftApXmlParser {
 				} else if(nodeName.equals(NODE_ATTR_KEY_CIPHER_TYPE)) {
 					String nodeValue = property.getFirstChild().getNodeValue();
 					softap.setCipherType(Integer.parseInt(nodeValue));
+				} else if(nodeName.equals(NODE_ATTR_KEY_DETAIL)) {
+					String nodeValue = property.getFirstChild().getNodeValue();
+					softap.setDetail(nodeValue);
+				} else if(nodeName.equals(NODE_ATTR_KEY_SELECTED)) {
+					String nodeValue = property.getFirstChild().getNodeValue();
+					softap.setIsSelected(Boolean.parseBoolean(nodeValue));
 				}
 			}
 			softaps.add(softap);
@@ -80,6 +86,14 @@ public class DomSoftApXmlParser implements SoftApXmlParser {
         	Element cipherTypeElement = doc.createElement(NODE_ATTR_KEY_CIPHER_TYPE);
         	ssidElement.setTextContent(softap.getCipherType()+"");
         	softapElement.appendChild(cipherTypeElement);
+        	
+        	Element detailElement = doc.createElement(NODE_ATTR_KEY_DETAIL);
+        	detailElement.setTextContent(softap.getDetail());
+        	softapElement.appendChild(detailElement);
+        	
+        	Element selectedElement = doc.createElement(NODE_ATTR_KEY_SELECTED);
+        	detailElement.setTextContent(softap.getIsSelected()+"");
+        	softapElement.appendChild(selectedElement);
         	
         	rootElement.appendChild(softapElement);
         }

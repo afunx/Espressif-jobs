@@ -4,20 +4,28 @@
         <ssid>softap-wep-ssid</ssid>
         <password>softap-wep-password</password>
         <cipher-type>0</cipher-type>
+        <detail>detail for wep</detail>
+        <selected>true</selected>
     </softap>
     <softap>
         <ssid>softap-wpa-ssid</ssid>
         <password>softap-wpa-password</password>
         <cipher-type>1</cipher-type>
+        <detail>detail for wpa</detail>
+        <selected>false</selected>
     </softap>
     <softap>
         <ssid>softap-open-ssid</ssid>
         <password>softap-open-password</password>
         <cipher-type>2</cipher-type>
+        <detail>detail for open</detail>
+        <selected>true</selected>
     </softap>
     <softap>
         <ssid>softap-invalid-ssid</ssid>
         <password>softap-invalid-password</password>
         <cipher-type>3</cipher-type>
+        <detail>detail for invalid</detail>
+        <selected>false</selected>
     </softap>
 </softaps>

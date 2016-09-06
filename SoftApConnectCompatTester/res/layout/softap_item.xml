@@ -5,24 +5,36 @@
     android:orientation="horizontal" >
 
     <TextView
-        android:textSize="18sp"
         android:id="@+id/tv_ssid_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:textSize="18sp" />
 
     <TextView
-        android:textSize="18sp"
         android:id="@+id/tv_pwd_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
-    
+        android:layout_weight="1"
+        android:textSize="18sp" />
+
     <TextView
-        android:textSize="18sp"
         android:id="@+id/tv_cipher_type_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_detail_item"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:id="@+id/cb_selected_item"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
