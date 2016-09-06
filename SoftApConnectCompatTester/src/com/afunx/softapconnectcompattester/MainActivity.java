@@ -8,6 +8,8 @@ import com.afunx.xml.model.SoftApXmlModel;
 import com.afunx.xml.model.persistence.SoftApPersistentor;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -32,6 +35,7 @@ public class MainActivity extends Activity {
 	private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 	private CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener;
 	private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener;
+	private SoftApXmlModel mSoftApSelected;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +55,38 @@ public class MainActivity extends Activity {
 
 	}
 
+	private void showEditSsidDialog() {
+		log.debug("showEditSsidDialog()");
+		View view = View.inflate(this, R.layout.edit_dialog, null);
+		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
+		textview.setText(mSoftApSelected.getSsid());
+		EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
+		edittext.setHint(R.string.softap_edit_dialog_ssid_hint);
+
+		new AlertDialog.Builder(this)
+				.setView(view)
+				.setTitle(R.string.softap_edit_dialog_ssid_title)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO
+								log.debug("showEditSsidDialog() confirm");
+							}
+
+						})
+				.setNegativeButton(android.R.string.cancel, null).show();
+	}
+	
 	private class MyOnItemLongClickListener implements
 			AdapterView.OnItemLongClickListener {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
 				int position, long id) {
+			mSoftApSelected = ((ViewHolder) view.getTag()).softap;
 			PopupMenu popMenu = new PopupMenu(MainActivity.this, view);
 			Menu menu = popMenu.getMenu();
 			menu.add(Menu.NONE, POPMENU_ID_EDIT_SSID, 0,
@@ -86,9 +116,9 @@ public class MainActivity extends Activity {
 
 		@Override
 		public boolean onMenuItemClick(MenuItem item) {
-			log.debug("onMenuItemClick()");
+			log.debug("onMenuItemClick() selected softap:" + mSoftApSelected);
 			if (item.getItemId() == POPMENU_ID_EDIT_SSID) {
-				log.debug("onMenuItemClick() edit ssid");
+				showEditSsidDialog();
 				return true;
 			} else if (item.getItemId() == POPMENU_ID_EDIT_PWD) {
 				log.debug("onMenuItemClick() edit pwd");
@@ -105,6 +135,7 @@ public class MainActivity extends Activity {
 		private TextView tvCipherTypeHolder;
 		private TextView tvDetailHolder;
 		private CheckBox cbSelectedHolder;
+		private SoftApXmlModel softap;
 	}
 
 	private class MyAdapter extends BaseAdapter {
@@ -145,13 +176,14 @@ public class MainActivity extends Activity {
 						.findViewById(R.id.cb_selected_item);
 				holder.cbSelectedHolder
 						.setOnCheckedChangeListener(mOnCheckedChangeListener);
+				holder.softap = mSoftApList.get(position);
 				view.setTag(holder);
 			} else {
 				view = convertView;
 				holder = (ViewHolder) view.getTag();
 			}
 
-			SoftApXmlModel softap = mSoftApList.get(position);
+			SoftApXmlModel softap = holder.softap;
 			holder.tvSsidHolder.setText(softap.getSsid());
 			holder.tvPwdHolder.setText(softap.getPassword());
 			switch (softap.getCipherType()) {
