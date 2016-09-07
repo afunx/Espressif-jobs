@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 	private static final int POPMENU_ID_EDIT_SSID = 0;
 	private static final int POPMENU_ID_EDIT_PWD = 1;
 	private static final int POPMENU_ID_EDIT_DETAIL = 2;
+	private static final int POPMENU_ID_EDIT_DELETE = 3;
 	private ListView mListView;
 	private MyAdapter mAdapter;
 	private List<SoftApXmlModel> mSoftApList;
@@ -220,6 +221,34 @@ public class MainActivity extends Activity {
 				.setNegativeButton(android.R.string.cancel, null).show();
 	}
 	
+	private void showEditDeleteDialog() {
+		log.debug("showEditDeleteDialog()");
+		View view = View.inflate(this, R.layout.edit_dialog, null);
+		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
+		String detailText = getString(R.string.softap_edit_dialog_delete_hint)
+				+ " " + mSoftApSelected.getSsid();
+		textview.setText(detailText);
+		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
+		edittext.setVisibility(View.GONE);
+
+		new AlertDialog.Builder(this)
+				.setView(view)
+				.setTitle(R.string.softap_edit_dialog_delete_title)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								log.debug("showEditDeleteDialog() confirm");
+								mSoftApList.remove(mSoftApSelected);
+								doRefreshIfNecessary();
+							}
+
+						})
+				.setNegativeButton(android.R.string.cancel, null).show();
+	}
+	
 	private class MyOnItemLongClickListener implements
 			AdapterView.OnItemLongClickListener {
 		@Override
@@ -234,6 +263,8 @@ public class MainActivity extends Activity {
 					R.string.softap_popmenu_edit_pwd);
 			menu.add(Menu.NONE, POPMENU_ID_EDIT_DETAIL, 0,
 					R.string.softap_popmenu_edit_detail);
+			menu.add(Menu.NONE, POPMENU_ID_EDIT_DELETE, 0,
+					R.string.softap_popmenu_edit_delete);
 			popMenu.setOnMenuItemClickListener(mOnMenuItemClickListener);
 			popMenu.show();
 			return true;
@@ -301,6 +332,9 @@ public class MainActivity extends Activity {
 				log.debug("MyOnMenuItemClickListener onMenuItemClick() edit detail");
 				showEditDetailDialog();
 				return true;
+			} else if (item.getItemId() == POPMENU_ID_EDIT_DELETE) {
+				log.debug("MyOnMenuItemClickListener onMenuItemClick() edit delete");
+				showEditDeleteDialog();
 			}
 			return false;
 		}
