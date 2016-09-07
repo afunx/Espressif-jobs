@@ -5,13 +5,22 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.afunx.service.SoftapTestService;
+import com.afunx.service.SoftapTestService.MyBinder;
+import com.afunx.service.Testcases;
 import com.afunx.xml.model.SoftApXmlModel;
 import com.afunx.xml.model.persistence.SoftApPersistentor;
+import com.espressif.iot.base.net.wifi.WifiAdmin;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +57,22 @@ public class MainActivity extends Activity {
 	private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener;
 	private SoftApXmlModel mSoftApSelected;
 
+	private SoftapTestService mSoftapTestService;
 	
+	private ServiceConnection sc = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			log.info("ServiceConnection onServiceDisconnected()");
+			mSoftapTestService = null;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			log.info("ServiceConnection onServiceConnected()");
+			mSoftapTestService = ((MyBinder) service).getService();
+		}
+	};
 	/**
 	 * ========================================================
 	 * ==================logic related start===================
@@ -156,6 +180,18 @@ public class MainActivity extends Activity {
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemLongClickListener(mOnItemLongClickListener);
 
+		Intent intent = new Intent(this, SoftapTestService.class);
+		bindService(intent, sc, Context.BIND_AUTO_CREATE);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		log.debug("onDestroy()");
+		if (mSoftapTestService != null) {
+			mSoftapTestService.stopService();
+		}
+		unbindService(sc);
 	}
 	
 	@Override
@@ -229,23 +265,37 @@ public class MainActivity extends Activity {
 									return;
 								}
 								// check test retry time
-								int retryCount = 0;
-								String retryCountStr = edtTestconnRetry.getText().toString();
-								if(!TextUtils.isEmpty(retryCountStr)){
-									retryCount = Integer.parseInt(retryCountStr);
+								int connRetry = 0;
+								String connRetryStr = edtTestconnRetry.getText().toString();
+								if(!TextUtils.isEmpty(connRetryStr)){
+									connRetry = Integer.parseInt(connRetryStr);
 								}
-								if(retryCount<=0) {
+								if(connRetry<=0) {
 									Toast.makeText(
 											MainActivity.this,
 											R.string.softap_toast_err_start_testretry_zero,
 											Toast.LENGTH_LONG).show();
 									return;
 								}
-								
+								// check wifi is open already
+								if(!WifiAdmin.getInstance().isWifiEnabled()){
+									Toast.makeText(
+											MainActivity.this,
+											R.string.softap_toast_err_start_wifi_is_closed,
+											Toast.LENGTH_LONG).show();
+									return;
+								}
 								int testMode = spTestmode
 										.getSelectedItemPosition();
+								Testcases testcases = new Testcases();
+								testcases.setSelectedSoftaps(selectedSoftaps);
+								testcases.setTestConnRetry(connRetry);
+								testcases.setTestConnTimeout(connTimeout);
+								testcases.setTestCount(testCount);
+								testcases.setTestMode(testMode);
 								log.debug("showStartTestDialog() testMode:"
 										+ testMode + ", testCount:" + testCount);
+								mSoftapTestService.startService(testcases);
 							}
 
 				})

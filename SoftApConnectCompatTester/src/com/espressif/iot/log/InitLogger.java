@@ -18,5 +18,6 @@ public class InitLogger {
 				com.afunx.xml.model.persistence.SoftApPersistentor.class)
 				.setLevel(Level.DEBUG);
 		Logger.getLogger(com.afunx.util.FileUtil.class).setLevel(Level.OFF);
+		Logger.getLogger(com.afunx.service.SoftapTestService.class).setLevel(Level.DEBUG);
 	}
 }
