@@ -30,6 +30,9 @@
         <item>WEP</item>
         <item>WPA</item>
         <item>OPEN</item>
+        <item>WEP-SSID-HIDDEN</item>
+        <item>WPA-SSID-HIDDEN</item>
+        <item>OPEN-SSID-HIDDEN</item>
         <item>INVALID</item>
     </string-array>
 

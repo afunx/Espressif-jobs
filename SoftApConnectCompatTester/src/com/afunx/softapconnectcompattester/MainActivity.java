@@ -470,9 +470,9 @@ public class MainActivity extends Activity {
 			SoftApXmlModel softap = holder.softap;
 			holder.tvSsidHolder.setText(softap.getSsid());
 			holder.tvPwdHolder.setText(softap.getPassword());
-			// cipher is [0,3]
+			// cipher is [0,6]
 			int cipherType = softap.getCipherType();
-			cipherType = cipherType > 3 ? 3 : Math.max(0, cipherType);
+			cipherType = cipherType > 6 ? 6 : Math.max(0, cipherType);
 			holder.spCipherTypeHolder.setSelection(cipherType);
 			holder.tvDetailHolder.setText(softap.getDetail());
 			holder.cbSelectedHolder.setChecked(softap.getIsSelected());

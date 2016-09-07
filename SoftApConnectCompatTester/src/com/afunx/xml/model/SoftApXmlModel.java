@@ -4,7 +4,7 @@ public class SoftApXmlModel implements Cloneable {
 
 	private String mSsid = "";
 	private String mPassword = "";
-	// 0: WEP 1: WPA 2: OPEN 3: INVALID
+	// 0: WEP 1: WPA 2: OPEN 3: WEP-SSID-HIDDEN 4: WPA-SSID-HIDDEN 5: OPEN-SSID-HIDDEN 6: INVALID
 	private int mCipherType = -1;
 	private String mDetail = "";
 	private boolean mIsSelected = false;
