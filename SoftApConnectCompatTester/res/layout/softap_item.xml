@@ -19,12 +19,13 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/tv_cipher_type_item"
+    
+    <Spinner
+        android:id="@+id/sp_cipher_type_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:entries="@array/cipher_types"
         android:textSize="18sp" />
 
     <TextView

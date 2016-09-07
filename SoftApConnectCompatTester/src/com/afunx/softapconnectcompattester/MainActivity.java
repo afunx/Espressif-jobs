@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -33,7 +34,6 @@ public class MainActivity extends Activity {
 	private ListView mListView;
 	private List<SoftApXmlModel> mSoftApList;
 	private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
-	private CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener;
 	private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener;
 	private SoftApXmlModel mSoftApSelected;
 
@@ -44,7 +44,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main_layout);
 		mListView = (ListView) findViewById(R.id.listview);
 		mOnItemLongClickListener = new MyOnItemLongClickListener();
-		mOnCheckedChangeListener = new MyOnCheckedChangeListener();
 		mOnMenuItemClickListener = new MyOnMenuItemClickListener();
 
 		mSoftApList = SoftApPersistentor.loadSoftAps();
@@ -99,14 +98,44 @@ public class MainActivity extends Activity {
 		}
 
 	}
+	
+	private class MyOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+		private SoftApXmlModel mSoftap;
+		
+		MyOnItemSelectedListener(SoftApXmlModel softap){
+			mSoftap = softap;
+		}
+		
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+				int position, long id) {
+			log.debug("MyOnItemSelectedListener onItemSelected():" + mSoftap);
+			// TODO
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+			// ignore
+			log.debug("MyOnItemSelectedListener onNothingSelected() ignore");
+		}
+		
+	}
 
 	private class MyOnCheckedChangeListener implements
 			CompoundButton.OnCheckedChangeListener {
+		
+		private SoftApXmlModel mSoftap;
+		
+		MyOnCheckedChangeListener(SoftApXmlModel softap){
+			mSoftap = softap;
+		}
 
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
-			log.debug("onCheckedChanged()");
+			log.debug("MyOnCheckedChangeListener onCheckedChanged():" + mSoftap);
+			// TODO
 		}
 
 	}
@@ -116,12 +145,12 @@ public class MainActivity extends Activity {
 
 		@Override
 		public boolean onMenuItemClick(MenuItem item) {
-			log.debug("onMenuItemClick() selected softap:" + mSoftApSelected);
+			log.debug("MyOnMenuItemClickListener onMenuItemClick() selected softap:" + mSoftApSelected);
 			if (item.getItemId() == POPMENU_ID_EDIT_SSID) {
 				showEditSsidDialog();
 				return true;
 			} else if (item.getItemId() == POPMENU_ID_EDIT_PWD) {
-				log.debug("onMenuItemClick() edit pwd");
+				log.debug("MyOnMenuItemClickListener onMenuItemClick() edit pwd");
 				return true;
 			}
 			return false;
@@ -132,7 +161,7 @@ public class MainActivity extends Activity {
 	private static class ViewHolder {
 		private TextView tvSsidHolder;
 		private TextView tvPwdHolder;
-		private TextView tvCipherTypeHolder;
+		private Spinner spCipherTypeHolder;
 		private TextView tvDetailHolder;
 		private CheckBox cbSelectedHolder;
 		private SoftApXmlModel softap;
@@ -161,6 +190,7 @@ public class MainActivity extends Activity {
 			ViewHolder holder;
 
 			if (convertView == null) {
+				SoftApXmlModel softap = mSoftApList.get(position);
 				view = View.inflate(MainActivity.this, R.layout.softap_item,
 						null);
 				holder = new ViewHolder();
@@ -168,15 +198,18 @@ public class MainActivity extends Activity {
 						.findViewById(R.id.tv_ssid_item);
 				holder.tvPwdHolder = (TextView) view
 						.findViewById(R.id.tv_pwd_item);
-				holder.tvCipherTypeHolder = (TextView) view
-						.findViewById(R.id.tv_cipher_type_item);
+				holder.spCipherTypeHolder = (Spinner) view
+						.findViewById(R.id.sp_cipher_type_item);
+				MyOnItemSelectedListener onItemSelectedListener = new MyOnItemSelectedListener(softap);
+				holder.spCipherTypeHolder.setOnItemSelectedListener(onItemSelectedListener);
 				holder.tvDetailHolder = (TextView) view
 						.findViewById(R.id.tv_detail_item);
 				holder.cbSelectedHolder = (CheckBox) view
 						.findViewById(R.id.cb_selected_item);
+				MyOnCheckedChangeListener onCheckedChangeListener = new MyOnCheckedChangeListener(softap);
 				holder.cbSelectedHolder
-						.setOnCheckedChangeListener(mOnCheckedChangeListener);
-				holder.softap = mSoftApList.get(position);
+						.setOnCheckedChangeListener(onCheckedChangeListener);
+				holder.softap = softap;
 				view.setTag(holder);
 			} else {
 				view = convertView;
@@ -186,21 +219,10 @@ public class MainActivity extends Activity {
 			SoftApXmlModel softap = holder.softap;
 			holder.tvSsidHolder.setText(softap.getSsid());
 			holder.tvPwdHolder.setText(softap.getPassword());
-			switch (softap.getCipherType()) {
-			case 0:
-				holder.tvCipherTypeHolder.setText("WEP");
-				break;
-			case 1:
-				holder.tvCipherTypeHolder.setText("WPA");
-				break;
-			case 2:
-				holder.tvCipherTypeHolder.setText("OPEN");
-				break;
-			case 3:
-			default:
-				holder.tvCipherTypeHolder.setText("INVALID");
-				break;
-			}
+			// cipher is [0,3]
+			int cipherType = softap.getCipherType();
+			cipherType = cipherType > 3 ? 3 : Math.max(0, cipherType);
+			holder.spCipherTypeHolder.setSelection(cipherType);
 			holder.tvDetailHolder.setText(softap.getDetail());
 			holder.cbSelectedHolder.setChecked(softap.getIsSelected());
 			return view;
