@@ -24,7 +24,14 @@
     <string name="softap_add_dialog_pwd_hint">@string/softap_edit_dialog_pwd_hint</string>
     <string name="softap_add_dialog_detail_hint">@string/softap_edit_dialog_detail_hint</string>
     
+    <string name="softap_start_dialog_testcount_hint">Please Input test time for each softap(>0)</string>
+    <string name="softap_start_dialog_conntimeout_hint">Please Input connect timeout in seconds(>0)</string>
+    <string name="softap_start_dialog_connretry_hint">Please Input connect retry time(>0)</string>
+    
     <string name="softap_toast_err_softa_exist_already">Softap has exist already!</string>
+    <string name="softap_toast_err_start_testcount_zero">Softap testcount should > 0</string>
+    <string name="softap_toast_err_start_testtimeout_zero">Softap connect timeout should > 0</string>
+    <string name="softap_toast_err_start_testretry_zero">Softap retry time should > 0</string>
     
     <string-array name="cipher_types">
         <item>WEP</item>
@@ -34,6 +41,11 @@
         <item>WPA-SSID-HIDDEN</item>
         <item>OPEN-SSID-HIDDEN</item>
         <item>INVALID</item>
+    </string-array>
+    
+    <string-array name="test_modes">
+        <item>Single Cycle</item>
+        <item>Loop Cycle</item>
     </string-array>
 
 </resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_start_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:id="@+id/sp_start_dialog_testmode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/test_modes"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edt_start_dialog_testcount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_start_dialog_testcount_hint"
+        android:inputType="number"
+        android:textSize="18sp" />
+    
+    <EditText
+        android:id="@+id/edt_start_dialog_conntimeout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_start_dialog_conntimeout_hint"
+        android:inputType="number"
+        android:textSize="18sp" />
+    
+    <EditText
+        android:id="@+id/edt_start_dialog_connretry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_start_dialog_connretry_hint"
+        android:inputType="number"
+        android:textSize="18sp" />
+
+</LinearLayout>

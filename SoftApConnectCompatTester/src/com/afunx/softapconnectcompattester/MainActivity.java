@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,6 +97,17 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
+	private List<SoftApXmlModel> getSelectedSoftApList(
+			List<SoftApXmlModel> softApList) {
+		List<SoftApXmlModel> selectedSoftaps = new ArrayList<SoftApXmlModel>();
+		for (SoftApXmlModel softap : softApList) {
+			if(softap.getIsSelected()) {
+				selectedSoftaps.add(softap.cloneObject());
+			}
+		}
+		return selectedSoftaps;
+	}
+	
 	// TODO async or not
 	private void saveSoftApListSync(List<SoftApXmlModel> softapList) {
 		log.debug("saveSoftApListSync()");
@@ -162,9 +174,82 @@ public class MainActivity extends Activity {
 			return true;
 		case MENU_ID_START_SERVICE:
 			log.debug("menu item start service is clicked");
+			showStartTestDialog();
 			return true;
 		}
 		return false;
+	}
+	
+	private void showStartTestDialog() {
+		log.debug("showStartTestDialog()");
+		View view = View.inflate(this, R.layout.start_dialog, null);
+		final Spinner spTestmode = (Spinner) view.findViewById(R.id.sp_start_dialog_testmode);
+		final EditText edtTestcount = (EditText) view.findViewById(R.id.edt_start_dialog_testcount);
+		final EditText edtTestconnTiemout = (EditText) view.findViewById(R.id.edt_start_dialog_conntimeout);
+		final EditText edtTestconnRetry = (EditText) view.findViewById(R.id.edt_start_dialog_connretry);
+		final TextView tvTestTitle = (TextView) view.findViewById(R.id.tv_start_dialog);
+		final List<SoftApXmlModel> selectedSoftaps = getSelectedSoftApList(mSoftApList);
+		String testTitle = selectedSoftaps.size() + " softaps is selected";
+		tvTestTitle.setText(testTitle);
+		
+		new AlertDialog.Builder(this)
+		.setView(view)
+		.setTitle(R.string.softap_menu_item_start_title)
+		.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								log.debug("showStartTestDialog() confirm");
+								int testCount = 0;
+								String testCountStr = edtTestcount.getText().toString();
+								// check test count
+								if(!TextUtils.isEmpty(testCountStr)){
+									testCount = Integer.parseInt(testCountStr);
+								}
+								if (testCount <= 0) {
+									Toast.makeText(
+											MainActivity.this,
+											R.string.softap_toast_err_start_testcount_zero,
+											Toast.LENGTH_LONG).show();
+									return;
+								}
+								// check test connect timeout
+								int connTimeout = 0;
+								String connTimeoutStr = edtTestconnTiemout.getText().toString();
+								if(!TextUtils.isEmpty(connTimeoutStr)){
+									connTimeout = Integer.parseInt(connTimeoutStr);
+								}
+								if(connTimeout<=0) {
+									Toast.makeText(
+											MainActivity.this,
+											R.string.softap_toast_err_start_testtimeout_zero,
+											Toast.LENGTH_LONG).show();
+									return;
+								}
+								// check test retry time
+								int retryCount = 0;
+								String retryCountStr = edtTestconnRetry.getText().toString();
+								if(!TextUtils.isEmpty(retryCountStr)){
+									retryCount = Integer.parseInt(retryCountStr);
+								}
+								if(retryCount<=0) {
+									Toast.makeText(
+											MainActivity.this,
+											R.string.softap_toast_err_start_testretry_zero,
+											Toast.LENGTH_LONG).show();
+									return;
+								}
+								
+								int testMode = spTestmode
+										.getSelectedItemPosition();
+								log.debug("showStartTestDialog() testMode:"
+										+ testMode + ", testCount:" + testCount);
+							}
+
+				})
+		.setNegativeButton(android.R.string.cancel, null).show();
 	}
 	
 	private void showAddSoftapDialog() {
