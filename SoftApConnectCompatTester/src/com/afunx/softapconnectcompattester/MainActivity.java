@@ -89,10 +89,23 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
+	// TODO async or not
+	private void saveSoftApListSync(List<SoftApXmlModel> softapList) {
+		log.debug("saveSoftApListSync()");
+		List<SoftApXmlModel> copyList = new ArrayList<SoftApXmlModel>();
+		updateSoftApList(copyList, softapList);
+		SoftApPersistentor.saveSoftAps(copyList);
+	}
+	
 	private void doRefreshIfNecessary() {
 		log.debug("doRefreshIfNecessary()");
 		log.debug("doRefreshIfNecessary() prev list:" + mSoftApListPrev);
 		log.debug("doRefreshIfNecessary() cur list:" + mSoftApList);
+		if (!compareSoftApList(mSoftApList, mSoftApListPrev)) {
+			log.debug("doRefreshIfNecessary() changed");
+			saveSoftApListSync(mSoftApList);
+			updateSoftApList(mSoftApListPrev, mSoftApList);
+		}
 		mAdapter.notifyDataSetChanged();
 	}
 	
@@ -157,7 +170,7 @@ public class MainActivity extends Activity {
 		log.debug("showEditPwdDialog()");
 		View view = View.inflate(this, R.layout.edit_dialog, null);
 		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
-		textview.setText(mSoftApSelected.getSsid());
+		textview.setText(mSoftApSelected.getPassword());
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_pwd_hint);
 
@@ -184,7 +197,7 @@ public class MainActivity extends Activity {
 		log.debug("showEditDetailDialog()");
 		View view = View.inflate(this, R.layout.edit_dialog, null);
 		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
-		textview.setText(mSoftApSelected.getSsid());
+		textview.setText(mSoftApSelected.getDetail());
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_detail_hint);
 
