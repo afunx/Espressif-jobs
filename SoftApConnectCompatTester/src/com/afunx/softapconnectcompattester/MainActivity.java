@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.afunx.service.SoftapTestService;
 import com.afunx.service.SoftapTestService.MyBinder;
 import com.afunx.service.Testcases;
+import com.afunx.view.ProgressBar4Executing;
 import com.afunx.xml.model.SoftApXmlModel;
 import com.afunx.xml.model.persistence.SoftApPersistentor;
 import com.espressif.iot.base.net.wifi.WifiAdmin;
@@ -58,6 +59,7 @@ public class MainActivity extends Activity {
 	private SoftApXmlModel mSoftApSelected;
 
 	private SoftapTestService mSoftapTestService;
+	private ProgressBar4Executing mProgressBar4Executing;
 	
 	private ServiceConnection sc = new ServiceConnection() {
 
@@ -132,7 +134,7 @@ public class MainActivity extends Activity {
 		return selectedSoftaps;
 	}
 	
-	// TODO async or not
+	// for write xml into sd card is quick, just let it sync
 	private void saveSoftApListSync(List<SoftApXmlModel> softapList) {
 		log.debug("saveSoftApListSync()");
 		List<SoftApXmlModel> copyList = new ArrayList<SoftApXmlModel>();
@@ -179,6 +181,8 @@ public class MainActivity extends Activity {
 		mAdapter = new MyAdapter();
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemLongClickListener(mOnItemLongClickListener);
+		
+		mProgressBar4Executing = new ProgressBar4Executing();
 
 		Intent intent = new Intent(this, SoftapTestService.class);
 		bindService(intent, sc, Context.BIND_AUTO_CREATE);
@@ -214,6 +218,20 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return false;
+	}
+	
+	private void showExecProgressDialog() {
+		log.debug("showExecProgressDialog()");
+		final SoftapTestService localService = mSoftapTestService;
+		Runnable cancelRunnable = new Runnable() {
+			@Override
+			public void run() {
+				if(localService!=null){
+					localService.stopService();
+				}
+			}
+		};
+		mProgressBar4Executing.show(this, cancelRunnable);
 	}
 	
 	private void showStartTestDialog() {
@@ -295,7 +313,9 @@ public class MainActivity extends Activity {
 								testcases.setTestMode(testMode);
 								log.debug("showStartTestDialog() testMode:"
 										+ testMode + ", testCount:" + testCount);
+								showExecProgressDialog();
 								mSoftapTestService.startService(testcases);
+								
 							}
 
 				})

@@ -33,6 +33,8 @@
     <string name="softap_toast_err_start_testtimeout_zero">Softap connect timeout should > 0</string>
     <string name="softap_toast_err_start_testretry_zero">Softap retry time should > 0</string>
 	<string name="softap_toast_err_start_wifi_is_closed">Wi-Fi is closed</string>
+	
+	<string name="softap_progress_bar_title">Testcase executing situation</string>
     
     <string-array name="cipher_types">
         <item>WEP</item>
