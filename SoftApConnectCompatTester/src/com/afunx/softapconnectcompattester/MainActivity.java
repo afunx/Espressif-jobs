@@ -25,14 +25,20 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	private static final Logger log = Logger.getLogger(MainActivity.class);
+	
 	private static final int POPMENU_ID_EDIT_SSID = 0;
 	private static final int POPMENU_ID_EDIT_PWD = 1;
 	private static final int POPMENU_ID_EDIT_DETAIL = 2;
 	private static final int POPMENU_ID_EDIT_DELETE = 3;
+	
+	private static final int MENU_ID_ADD_SOFTAP = 0;
+	private static final int MENU_ID_START_SERVICE = 1;
+	
 	private ListView mListView;
 	private MyAdapter mAdapter;
 	private List<SoftApXmlModel> mSoftApList;
@@ -138,6 +144,68 @@ public class MainActivity extends Activity {
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemLongClickListener(mOnItemLongClickListener);
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, MENU_ID_START_SERVICE, Menu.NONE, R.string.softap_menu_item_start_title);
+		menu.add(Menu.NONE, MENU_ID_ADD_SOFTAP, Menu.NONE, R.string.softap_menu_item_add_title);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_ID_ADD_SOFTAP:
+			log.debug("menu item add softap is clicked");
+			showAddSoftapDialog();
+			return true;
+		case MENU_ID_START_SERVICE:
+			log.debug("menu item start service is clicked");
+			return true;
+		}
+		return false;
+	}
+	
+	private void showAddSoftapDialog() {
+		log.debug("showAddSoftapDialog()");
+		View view = View.inflate(this, R.layout.add_dialog, null);
+		final EditText edtSsid = (EditText) view.findViewById(R.id.edt_edit_add_ssid);
+		final EditText edtPwd = (EditText) view.findViewById(R.id.edt_edit_add_pwd);
+		final Spinner spCipherType = (Spinner) view.findViewById(R.id.sp_cipher_type_item);
+		final EditText edtDetail = (EditText) view.findViewById(R.id.edt_edit_add_detail);
+		final CheckBox cbSelected = (CheckBox) view.findViewById(R.id.cb_edit_add_selected);
+		
+		new AlertDialog.Builder(this)
+		.setView(view)
+		.setTitle(R.string.softap_menu_item_add_title)
+		.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						log.debug("showEditSsidDialog() confirm");
+						SoftApXmlModel softap = new SoftApXmlModel();
+						String ssid = edtSsid.getText().toString();
+						softap.setSsid(ssid);
+						String password = edtPwd.getText().toString();
+						softap.setPassword(password);
+						int cipherType = spCipherType.getSelectedItemPosition();
+						softap.setCipherType(cipherType);
+						String detail = edtDetail.getText().toString();
+						softap.setDetail(detail);
+						softap.setIsSelected(cbSelected.isChecked());
+						if(pickSoftApBySsid(mSoftApList, ssid)!=null) {
+							Toast.makeText(MainActivity.this, R.string.softap_toast_err_softa_exist_already, Toast.LENGTH_LONG).show();
+						} else {
+							mSoftApList.add(softap);
+							doRefreshIfNecessary();
+						}
+					}
+
+				})
+		.setNegativeButton(android.R.string.cancel, null).show();
 	}
 	
 	private void showEditSsidDialog() {

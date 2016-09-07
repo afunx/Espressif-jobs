@@ -36,7 +36,6 @@
         android:textSize="18sp" />
 
     <CheckBox
-        android:visibility="visible"
         android:id="@+id/cb_selected_item"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

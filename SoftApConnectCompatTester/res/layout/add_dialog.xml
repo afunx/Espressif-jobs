@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/edt_edit_add_ssid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_add_dialog_ssid_hint"
+        android:inputType="text"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edt_edit_add_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_add_dialog_pwd_hint"
+        android:inputType="text"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:id="@+id/sp_cipher_type_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/cipher_types"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edt_edit_add_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/softap_add_dialog_detail_hint"
+        android:inputType="text"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:id="@+id/cb_edit_add_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

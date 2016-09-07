@@ -16,7 +16,16 @@
     <string name="softap_edit_dialog_pwd_title">Edit Password</string>
     <string name="softap_edit_dialog_detail_title">Edit Detail</string>
     <string name="softap_edit_dialog_delete_title">Delete</string>
-
+    
+    <string name="softap_menu_item_add_title">Add new SoftAp</string>
+    <string name="softap_menu_item_start_title">Start Test</string>
+    
+    <string name="softap_add_dialog_ssid_hint">@string/softap_edit_dialog_ssid_hint</string>
+    <string name="softap_add_dialog_pwd_hint">@string/softap_edit_dialog_pwd_hint</string>
+    <string name="softap_add_dialog_detail_hint">@string/softap_edit_dialog_detail_hint</string>
+    
+    <string name="softap_toast_err_softa_exist_already">Softap has exist already!</string>
+    
     <string-array name="cipher_types">
         <item>WEP</item>
         <item>WPA</item>
