@@ -1,5 +1,6 @@
 package com.afunx.softapconnectcompattester;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,7 +21,6 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -31,12 +31,82 @@ public class MainActivity extends Activity {
 	private static final Logger log = Logger.getLogger(MainActivity.class);
 	private static final int POPMENU_ID_EDIT_SSID = 0;
 	private static final int POPMENU_ID_EDIT_PWD = 1;
+	private static final int POPMENU_ID_EDIT_DETAIL = 2;
 	private ListView mListView;
+	private MyAdapter mAdapter;
 	private List<SoftApXmlModel> mSoftApList;
+	private List<SoftApXmlModel> mSoftApListPrev;
 	private AdapterView.OnItemLongClickListener mOnItemLongClickListener;
 	private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener;
 	private SoftApXmlModel mSoftApSelected;
 
+	
+	/**
+	 * ========================================================
+	 * ==================logic related start===================
+	 * ========================================================
+	 */
+	
+	private void cloneSoftApList(List<SoftApXmlModel> dest,List<SoftApXmlModel>src)
+	{
+		for(SoftApXmlModel softap : src){
+			SoftApXmlModel copy = softap.cloneObject();
+			dest.add(copy);
+		}
+	}
+	
+	private void updateSoftApList(List<SoftApXmlModel> dest,List<SoftApXmlModel>src)
+	{
+		dest.clear();
+		cloneSoftApList(dest, src);
+	}
+
+	private SoftApXmlModel pickSoftApBySsid(List<SoftApXmlModel> dest,
+			String ssid) {
+		// pick softap by ssid
+		for (SoftApXmlModel softap : dest) {
+			if (softap.getSsid().equals(ssid)) {
+				return softap;
+			}
+		}
+		return null;
+	}
+	
+	private boolean compareSoftApList(List<SoftApXmlModel> dest,
+			List<SoftApXmlModel> src) {
+		// check size
+		if (dest.size() != src.size()) {
+			return false;
+		}
+		// check each softap from dest
+		for (SoftApXmlModel softapDest : dest) {
+			String ssid = softapDest.getSsid();
+			SoftApXmlModel softapSrc = pickSoftApBySsid(src, ssid);
+			if (softapSrc == null || !softapSrc.equals(softapDest)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private void doRefreshIfNecessary() {
+		log.debug("doRefreshIfNecessary()");
+		log.debug("doRefreshIfNecessary() prev list:" + mSoftApListPrev);
+		log.debug("doRefreshIfNecessary() cur list:" + mSoftApList);
+		mAdapter.notifyDataSetChanged();
+	}
+	
+	/**
+	 * ========================================================
+	 * ===================logic related end====================
+	 * ========================================================
+	 */
+	
+	/**
+	 * ========================================================
+	 * ====================UI related start====================
+	 * ========================================================
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		log.debug("onCreate()");
@@ -47,19 +117,21 @@ public class MainActivity extends Activity {
 		mOnMenuItemClickListener = new MyOnMenuItemClickListener();
 
 		mSoftApList = SoftApPersistentor.loadSoftAps();
+		mSoftApListPrev = new ArrayList<SoftApXmlModel>();
+		cloneSoftApList(mSoftApListPrev, mSoftApList);
 
-		ListAdapter adapter = new MyAdapter();
-		mListView.setAdapter(adapter);
+		mAdapter = new MyAdapter();
+		mListView.setAdapter(mAdapter);
 		mListView.setOnItemLongClickListener(mOnItemLongClickListener);
 
 	}
-
+	
 	private void showEditSsidDialog() {
 		log.debug("showEditSsidDialog()");
 		View view = View.inflate(this, R.layout.edit_dialog, null);
 		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
 		textview.setText(mSoftApSelected.getSsid());
-		EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
+		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_ssid_hint);
 
 		new AlertDialog.Builder(this)
@@ -71,8 +143,64 @@ public class MainActivity extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// TODO
 								log.debug("showEditSsidDialog() confirm");
+								String newSsid = edittext.getText().toString();
+								mSoftApSelected.setSsid(newSsid);
+								doRefreshIfNecessary();
+							}
+
+						})
+				.setNegativeButton(android.R.string.cancel, null).show();
+	}
+	
+	private void showEditPwdDialog() {
+		log.debug("showEditPwdDialog()");
+		View view = View.inflate(this, R.layout.edit_dialog, null);
+		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
+		textview.setText(mSoftApSelected.getSsid());
+		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
+		edittext.setHint(R.string.softap_edit_dialog_pwd_hint);
+
+		new AlertDialog.Builder(this)
+				.setView(view)
+				.setTitle(R.string.softap_edit_dialog_pwd_title)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								log.debug("showEditPwdDialog() confirm");
+								String newPwd = edittext.getText().toString();
+								mSoftApSelected.setPassword(newPwd);
+								doRefreshIfNecessary();
+							}
+
+						})
+				.setNegativeButton(android.R.string.cancel, null).show();
+	}
+	
+	private void showEditDetailDialog() {
+		log.debug("showEditDetailDialog()");
+		View view = View.inflate(this, R.layout.edit_dialog, null);
+		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
+		textview.setText(mSoftApSelected.getSsid());
+		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
+		edittext.setHint(R.string.softap_edit_dialog_detail_hint);
+
+		new AlertDialog.Builder(this)
+				.setView(view)
+				.setTitle(R.string.softap_edit_dialog_detail_title)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								log.debug("showEditDetailDialog() confirm");
+								String newDetail = edittext.getText().toString();
+								mSoftApSelected.setDetail(newDetail);
+								doRefreshIfNecessary();
 							}
 
 						})
@@ -81,7 +209,6 @@ public class MainActivity extends Activity {
 	
 	private class MyOnItemLongClickListener implements
 			AdapterView.OnItemLongClickListener {
-
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
 				int position, long id) {
@@ -92,6 +219,8 @@ public class MainActivity extends Activity {
 					R.string.softap_popmenu_edit_ssid);
 			menu.add(Menu.NONE, POPMENU_ID_EDIT_PWD, 0,
 					R.string.softap_popmenu_edit_pwd);
+			menu.add(Menu.NONE, POPMENU_ID_EDIT_DETAIL, 0,
+					R.string.softap_popmenu_edit_detail);
 			popMenu.setOnMenuItemClickListener(mOnMenuItemClickListener);
 			popMenu.show();
 			return true;
@@ -111,7 +240,8 @@ public class MainActivity extends Activity {
 		public void onItemSelected(AdapterView<?> parent, View view,
 				int position, long id) {
 			log.debug("MyOnItemSelectedListener onItemSelected():" + mSoftap);
-			// TODO
+			mSoftap.setCipherType(position);
+			doRefreshIfNecessary();
 		}
 
 		@Override
@@ -135,7 +265,8 @@ public class MainActivity extends Activity {
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
 			log.debug("MyOnCheckedChangeListener onCheckedChanged():" + mSoftap);
-			// TODO
+			mSoftap.setIsSelected(isChecked);
+			doRefreshIfNecessary();
 		}
 
 	}
@@ -151,6 +282,11 @@ public class MainActivity extends Activity {
 				return true;
 			} else if (item.getItemId() == POPMENU_ID_EDIT_PWD) {
 				log.debug("MyOnMenuItemClickListener onMenuItemClick() edit pwd");
+				showEditPwdDialog();
+				return true;
+			} else if (item.getItemId() == POPMENU_ID_EDIT_DETAIL) {
+				log.debug("MyOnMenuItemClickListener onMenuItemClick() edit detail");
+				showEditDetailDialog();
 				return true;
 			}
 			return false;
@@ -229,4 +365,9 @@ public class MainActivity extends Activity {
 		}
 
 	}
+	/**
+	 * ========================================================
+	 * =====================UI related end=====================
+	 * ========================================================
+	 */
 }

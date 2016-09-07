@@ -1,12 +1,18 @@
 <resources>
 
     <string name="app_name">SoftApConnectCompatTester</string>
+    
     <string name="softap_popmenu_edit_ssid">Edit Ssid</string>
     <string name="softap_popmenu_edit_pwd">Edit Password</string>
+    <string name="softap_popmenu_edit_detail">Edit Detail</string>
+    
     <string name="softap_edit_dialog_ssid_hint">Please Input new Ssid</string>
     <string name="softap_edit_dialog_pwd_hint">Please Input new Password</string>
+    <string name="softap_edit_dialog_detail_hint">Please Input new Detail</string>
+    
     <string name="softap_edit_dialog_ssid_title">Edit Ssid</string>
     <string name="softap_edit_dialog_pwd_title">Edit Password</string>
+    <string name="softap_edit_dialog_detail_title">Edit Detail</string>
 
     <string-array name="cipher_types">
         <item>WEP</item>
