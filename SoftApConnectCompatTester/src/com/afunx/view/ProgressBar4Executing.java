@@ -5,6 +5,7 @@ import com.afunx.softapconnectcompattester.R;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,9 +18,12 @@ public class ProgressBar4Executing {
 	private TextView mTextViewResultCur;
 	
 	private AlertDialog mAlertDialog;
+	
+	private Handler mHandler;
 
 	public void show(Context context, final Runnable cancelRunnable) {
-
+		
+		mHandler = new Handler();
 		View view = View.inflate(context, R.layout.exec_progress, null);
 		mTextViewCompleteness = (TextView) view
 				.findViewById(R.id.tv_exec_progress_completeness);
@@ -45,27 +49,71 @@ public class ProgressBar4Executing {
 		mAlertDialog = alertDialog;
 	}
 
-	public void updateCompleteness(String completeMsg) {
+	private void updateCompletenessInternal(String completeMsg) {
 		if (mTextViewCompleteness != null) {
 			mTextViewCompleteness.setText(completeMsg);
 		}
 	}
 
-	public void updateResultLast(String resultLastMsg) {
+	public void updateCompleteness(final String completeMsg) {
+		if (mHandler != null) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					updateCompletenessInternal(completeMsg);
+				}
+			});
+		}
+	}
+	
+	private void updateResultLastInternal(String resultLastMsg) {
 		if (mTextViewResultLast != null) {
 			mTextViewResultLast.setText(resultLastMsg);
 		}
 	}
 
-	public void updateResultCur(String resultCurMsg) {
+	public void updateResultLast(final String resultLastMsg) {
+		if (mHandler != null) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					updateResultLastInternal(resultLastMsg);
+				}
+			});
+		}
+	}
+	
+	private void updateResultCurInternal(String resultCurMsg) {
 		if (mTextViewResultCur != null) {
 			mTextViewResultCur.setText(resultCurMsg);
 		}
 	}
 	
-	public void dismiss() {
+	public void updateResultCur(final String resultCurMsg) {
+		if (mHandler != null) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					updateResultCurInternal(resultCurMsg);
+				}
+			});
+		}
+	}
+	
+	private void dismissInternal() {
 		if (mAlertDialog != null) {
 			mAlertDialog.dismiss();
+		}
+	}
+	
+	public void dismiss() {
+		if (mHandler != null) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					dismissInternal();
+				}
+			});
 		}
 	}
 }
