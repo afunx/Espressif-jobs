@@ -80,6 +80,13 @@ public interface IWifiAdmin
     boolean setWifiEnabled();
     
     /**
+     * disconnect from AP and forget the AP configuration
+     * 
+     * @param ssid	the AP's ssid
+     */
+    void disableConnected(final String ssid);
+    
+    /**
      * 
      * if the wifi is conneted to AP return true directly, otherwise enable the wifi connect to AP with
      * WifiConfiguration saved by Android System the result only indicate whether the connection is started

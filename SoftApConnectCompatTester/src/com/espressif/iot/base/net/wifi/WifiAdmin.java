@@ -451,6 +451,22 @@ public class WifiAdmin implements IWifiAdmin
         return ssid;
     }
     
+	@Override
+	public void disableConnected(String ssid) {
+		WifiConfiguration wifiConfiguration = getExistWifiConfiguration(ssid);
+		Context context = MyApplication.sharedInstance().getBaseContext();
+		WifiManager mWifiManager = (WifiManager) context
+				.getSystemService(Context.WIFI_SERVICE);
+		// only use the paraters,and remove the exist wifi Configuration
+		if (wifiConfiguration != null) {
+			log.info(Thread.currentThread().toString()
+					+ "##disableConnected(ssid=[" + ssid + "]");
+			int netId = wifiConfiguration.networkId;
+			mWifiManager.disableNetwork(netId);
+			mWifiManager.removeNetwork(netId);
+		}
+	}
+    
     @Override
     public boolean enableConnected(String ssid, WifiCipherType type, boolean isSsidHidden, String... password)
     {
