@@ -61,11 +61,27 @@ public class Testcase {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		// check the type
+		if (obj == null || !(obj instanceof Testcase)) {
+			return false;
+		}
+		Testcase other = (Testcase) obj;
+		return other.getIsSsidHidden() == this.getIsSsidHidden()
+				&& other.getConnRetry() == this.getConnRetry()
+				&& other.getConnTimeout() == this.getConnTimeout()
+				&& other.getDetail().equals(this.getDetail())
+				&& other.getPwd().equals(this.getPwd())
+				&& other.getSsid().equals(this.getSsid())
+				&& other.getWifiCipherType() == this.getWifiCipherType();
+	}
+	
+	@Override
 	public String toString() {
 		return "[" + "ssid=" + mSsid + "," + "pwd=" + mPwd + ","
 				+ "isSsidHidden=" + mIsSsidHidden + "," + "cipherType="
 				+ mWifiCipherType + "," + "detail=" + mDetail + ","
-				+ "connTimeout=" + mConnTimeout + "," + "connRetry="
+				+ "connTimeout=" + mConnTimeout + " sec" + "," + "connRetry="
 				+ mConnRetry + "]";
 	}
 }

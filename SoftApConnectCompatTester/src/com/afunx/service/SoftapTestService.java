@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.afunx.view.ProgressBar4Executing;
 import com.afunx.xml.model.SoftApXmlModel;
 import com.espressif.iot.base.net.wifi.WifiAdmin;
 import com.espressif.iot.type.net.WifiCipherType;
@@ -49,6 +50,7 @@ public class SoftapTestService extends Service {
 		private int mTotalCount;
 		private int mIndex4Next;
 		private Testcases mTestcases;
+		private TestcasesResult mTestcasesResult;
 		private Thread mThread;
 		private volatile boolean mIsInterrupted = true;
 		
@@ -87,20 +89,21 @@ public class SoftapTestService extends Service {
 				break;
 			}
 			String detail = softap.getDetail();
-			int connTimeout = testcases.getTestConnTiemout();
+			int connTimeout = testcases.getTestConnTimeout();
 			int connRetry = testcases.getTestConnRetry();
 			Testcase testcase = Testcase.createInstance(ssid, pwd, isSsidHidden, wifiCipherType, detail, connTimeout, connRetry);
 			return testcase;
 		}
 		
 		private SoftApXmlModel getNextSoftap(Testcases testcases) {
+			++mTotalCount;
 			List<SoftApXmlModel> softaps = testcases.getSelectedSoftaps();
-			int size = softaps.size();
-			SoftApXmlModel softap = softaps.get(mIndex4Next);
+			int size = testcases.getTestCount();
+			SoftApXmlModel softap = softaps.get(mIndex4Next);//TODO index 2, size is 2
 			// 0: Single Cycle 1: Loop Cycle
 			switch (testcases.getTestMode()) {
 			case 0:
-				mIndex4Next = (mTotalCount+1) / size;
+				mIndex4Next = mTotalCount / size;
 				break;
 			case 1:
 			default:
@@ -154,22 +157,52 @@ public class SoftapTestService extends Service {
 			return -1;
 		}
 		
-		private void onSuc(Testcase testcase,long cosumeTimestamp) {
-			
+		private void onExecuting(Testcase testcase) {
+			TestcaseResult result = TestcaseResult.createFailResult(testcase);
+			ProgressBar4Executing progressbar = mTestcases.getProgressBar();
+			progressbar.updateResultCur(result.getCurTestcaseStr());
+		}
+		
+		private void onSuc(Testcase testcase,long consumeTimestamp) {
+			TestcaseResult result = TestcaseResult.createSucResult(testcase, consumeTimestamp);
+			ProgressBar4Executing progressbar = mTestcases.getProgressBar();
+			progressbar.updateResultLast(result.getPrevTestcaseStr());
+			mTestcasesResult.suc(testcase, consumeTimestamp);
+			log4jSaveResult();
 		}
 		
 		private void onFail(Testcase testcase) {
+			TestcaseResult result = TestcaseResult.createFailResult(testcase);
+			ProgressBar4Executing progressbar = mTestcases.getProgressBar();
+			progressbar.updateResultLast(result.getPrevTestcaseStr());
+			mTestcasesResult.fail(testcase);
+			log4jSaveResult();
+		}
+		
+		private void log4jSaveResult() {
 			
+			ProgressBar4Executing progressbar = mTestcases.getProgressBar();
+			String shortResultStr = mTestcasesResult.getShortResultStr();
+			progressbar.updateCompleteness(shortResultStr);
+			
+			String resultStr = mTestcasesResult.getResultsStr();
+			log.info(resultStr);
 		}
 		
 		private void doTestcaseTask(Testcase testcase) {
 			log.debug("doTestcaseTask() testcase:" + testcase);
+			onExecuting(testcase);
 			final int connTimeout = testcase.getConnTimeout();
 			final int connRetry = testcase.getConnRetry();
 			final String ssid = testcase.getSsid();
 			final WifiCipherType type = testcase.getWifiCipherType();
 			final boolean isSsidHidden = testcase.getIsSsidHidden();
 			final String password = testcase.getPwd();
+			// 0. check wifi type
+			if (type == WifiCipherType.WIFICIPHER_INVALID) {
+				// invalid wifi cipher should fail surely
+				onFail(testcase);
+			}
 			// 1. disable wifi
 			if (!disconnectWifi(ssid)) {
 				// cancel
@@ -182,13 +215,14 @@ public class SoftapTestService extends Service {
 				// cancel
 			} else if (result < 0) {
 				// fail to connect wifi
+				onFail(testcase);
 			} else {
 				// suc to connect wifi
+				onSuc(testcase, result);
 			}
 		}
 		
 		private boolean doTestcasesTask() {
-			++mTotalCount;
 			// get next testcase
 			SoftApXmlModel softap = getNextSoftap(mTestcases);
 			Testcase testcase = getNextTestcase(mTestcases, softap);
@@ -200,6 +234,7 @@ public class SoftapTestService extends Service {
 		
 		public void startTask(Testcases testcases) {
 			mTestcases = testcases;
+			mTestcasesResult = TestcasesResult.createInstance(testcases);
 			mTotalCount = 0;
 			mIndex4Next = 0;
 			if (!mIsInterrupted) {
@@ -213,6 +248,8 @@ public class SoftapTestService extends Service {
 					}
 					log.debug("doTestcaseTask() finished");
 					mTestcases.getProgressBar().dismiss();
+					final TestcasesResult testcasesResult = mTestcasesResult;
+					mTestcases.getProgressBar().showResultDialog(testcasesResult);
 				}
 			};
 			mThread.start();

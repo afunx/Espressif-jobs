@@ -9,16 +9,11 @@ public class InitLogger {
 	public static void init() {
 		// ######content######
 		ConfigureLog4J.configure();
-		Logger.getLogger(com.afunx.softapconnectcompattester.MainActivity.class)
-				.setLevel(Level.DEBUG);
-		Logger.getLogger(
-				com.afunx.softapconnectcompattester.MyApplication.class)
-				.setLevel(Level.DEBUG);
-		Logger.getLogger(
-				com.afunx.xml.model.persistence.SoftApPersistentor.class)
-				.setLevel(Level.DEBUG);
+		Logger.getLogger(com.afunx.softapconnectcompattester.MainActivity.class).setLevel(Level.DEBUG);
+		Logger.getLogger(com.afunx.softapconnectcompattester.MyApplication.class).setLevel(Level.DEBUG);
+		Logger.getLogger(com.afunx.xml.model.persistence.SoftApPersistentor.class).setLevel(Level.DEBUG);
 		Logger.getLogger(com.afunx.util.FileUtil.class).setLevel(Level.OFF);
 		Logger.getLogger(com.afunx.service.SoftapTestService.class).setLevel(Level.DEBUG);
-		Logger.getLogger(com.espressif.iot.base.net.wifi.WifiAdmin.class).setLevel(Level.DEBUG);
+		Logger.getLogger(com.espressif.iot.base.net.wifi.WifiAdmin.class).setLevel(Level.OFF);
 	}
 }

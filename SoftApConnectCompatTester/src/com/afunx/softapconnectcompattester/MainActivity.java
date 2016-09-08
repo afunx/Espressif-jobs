@@ -223,6 +223,7 @@ public class MainActivity extends Activity {
 	private void showExecProgressDialog() {
 		log.debug("showExecProgressDialog()");
 		final SoftapTestService localService = mSoftapTestService;
+		final ProgressBar4Executing progressbar = mProgressBar4Executing;
 		Runnable cancelRunnable = new Runnable() {
 			@Override
 			public void run() {
@@ -231,7 +232,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
-		mProgressBar4Executing.show(this, cancelRunnable);
+		progressbar.show(this, cancelRunnable);
 	}
 	
 	private void showStartTestDialog() {
@@ -246,7 +247,7 @@ public class MainActivity extends Activity {
 		String testTitle = selectedSoftaps.size() + " softaps is selected";
 		tvTestTitle.setText(testTitle);
 		
-		new AlertDialog.Builder(this)
+		AlertDialog alertDialog = new AlertDialog.Builder(this)
 		.setView(view)
 		.setTitle(R.string.softap_menu_item_start_title)
 		.setPositiveButton(android.R.string.ok,
@@ -321,6 +322,7 @@ public class MainActivity extends Activity {
 
 				})
 		.setNegativeButton(android.R.string.cancel, null).show();
+		alertDialog.setCancelable(false);
 	}
 	
 	private void showAddSoftapDialog() {

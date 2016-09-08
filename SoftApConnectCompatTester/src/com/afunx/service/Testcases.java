@@ -39,7 +39,7 @@ public class Testcases {
 		mTestCount = testCount;
 	}
 	
-	public int getTestConnTiemout() {
+	public int getTestConnTimeout() {
 		return mTestConnTimeout;
 	}
 	
@@ -66,4 +66,5 @@ public class Testcases {
 	public int getTestCountTotal() {
 		return mTestCount * mSelectedSoftaps.size();
 	}
+	
 }

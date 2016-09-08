@@ -1,5 +1,6 @@
 package com.afunx.view;
 
+import com.afunx.service.TestcasesResult;
 import com.afunx.softapconnectcompattester.R;
 
 import android.app.AlertDialog;
@@ -16,13 +17,15 @@ public class ProgressBar4Executing {
 	private TextView mTextViewResultLast;
 
 	private TextView mTextViewResultCur;
-	
+
 	private AlertDialog mAlertDialog;
-	
+
 	private Handler mHandler;
 
+	private Context mContext;
+
 	public void show(Context context, final Runnable cancelRunnable) {
-		
+		mContext = context;
 		mHandler = new Handler();
 		View view = View.inflate(context, R.layout.exec_progress, null);
 		mTextViewCompleteness = (TextView) view
@@ -65,7 +68,7 @@ public class ProgressBar4Executing {
 			});
 		}
 	}
-	
+
 	private void updateResultLastInternal(String resultLastMsg) {
 		if (mTextViewResultLast != null) {
 			mTextViewResultLast.setText(resultLastMsg);
@@ -82,13 +85,13 @@ public class ProgressBar4Executing {
 			});
 		}
 	}
-	
+
 	private void updateResultCurInternal(String resultCurMsg) {
 		if (mTextViewResultCur != null) {
 			mTextViewResultCur.setText(resultCurMsg);
 		}
 	}
-	
+
 	public void updateResultCur(final String resultCurMsg) {
 		if (mHandler != null) {
 			mHandler.post(new Runnable() {
@@ -99,19 +102,45 @@ public class ProgressBar4Executing {
 			});
 		}
 	}
-	
+
 	private void dismissInternal() {
 		if (mAlertDialog != null) {
 			mAlertDialog.dismiss();
 		}
 	}
-	
+
 	public void dismiss() {
 		if (mHandler != null) {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
 					dismissInternal();
+				}
+			});
+		}
+	}
+
+	private void showResultDialogInternal(final TestcasesResult testcasesResult) {
+		if (mContext != null) {
+			View view = View
+					.inflate(mContext, R.layout.scrollview_dialog, null);
+			String resultStr = testcasesResult.getResultsStr();
+			AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+					.setView(view).setTitle("Execute Result")
+					.setNegativeButton("I know", null)
+					.show();
+			TextView textview = (TextView) view.findViewById(R.id.tv_scrollview_dialog);
+			textview.setText(resultStr);
+			alertDialog.setCancelable(false);
+		}
+	}
+
+	public void showResultDialog(final TestcasesResult testcasesResult) {
+		if (mHandler != null) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					showResultDialogInternal(testcasesResult);
 				}
 			});
 		}

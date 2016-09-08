@@ -3,33 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-	<TextView
-	    android:id="@+id/tv_exec_progress_completeness"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="center" />
-	
-	<TextView
-	    android:id="@+id/tv_exec_progress_result_last"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="center" 
-	    />
-	
-	<TextView
-	    android:id="@+id/tv_exec_progress_result_cur"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"
-	    />
-	
-	<ProgressBar 
-	    android:id="@+id/pb_exec_progress"
-	    android:layout_width="200dp"  
-        android:layout_height="wrap_content"
-        android:visibility="visible"
+
+    <TextView
+        android:id="@+id/tv_exec_progress_completeness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_exec_progress_result_last"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_exec_progress_result_cur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/pb_exec_progress"
         style="?android:attr/progressBarStyleLarge"
-	    />
-    
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
