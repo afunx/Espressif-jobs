@@ -373,10 +373,11 @@ public class MainActivity extends Activity {
 		textview.setText(mSoftApSelected.getSsid());
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_ssid_hint);
+		String title = getString(R.string.softap_edit_dialog_ssid_title) + " " + mSoftApSelected.getSsid();
 
 		new AlertDialog.Builder(this)
 				.setView(view)
-				.setTitle(R.string.softap_edit_dialog_ssid_title)
+				.setTitle(title)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
@@ -400,10 +401,11 @@ public class MainActivity extends Activity {
 		textview.setText(mSoftApSelected.getPassword());
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_pwd_hint);
+		String title = getString(R.string.softap_edit_dialog_pwd_title) + " " + mSoftApSelected.getSsid();
 
 		new AlertDialog.Builder(this)
 				.setView(view)
-				.setTitle(R.string.softap_edit_dialog_pwd_title)
+				.setTitle(title)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
@@ -427,10 +429,11 @@ public class MainActivity extends Activity {
 		textview.setText(mSoftApSelected.getDetail());
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_detail_hint);
+		String title = getString(R.string.softap_edit_dialog_detail_title) + " " + mSoftApSelected.getSsid();
 
 		new AlertDialog.Builder(this)
 				.setView(view)
-				.setTitle(R.string.softap_edit_dialog_detail_title)
+				.setTitle(title)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
@@ -451,15 +454,15 @@ public class MainActivity extends Activity {
 		log.debug("showEditDeleteDialog()");
 		View view = View.inflate(this, R.layout.edit_dialog, null);
 		TextView textview = (TextView) view.findViewById(R.id.tv_edit_dialog);
-		String detailText = getString(R.string.softap_edit_dialog_delete_hint)
-				+ " " + mSoftApSelected.getSsid();
+		String detailText = getString(R.string.softap_edit_dialog_delete_hint);
 		textview.setText(detailText);
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setVisibility(View.GONE);
+		String title = getString(R.string.softap_edit_dialog_delete_title) + " " + mSoftApSelected.getSsid();
 
 		new AlertDialog.Builder(this)
 				.setView(view)
-				.setTitle(R.string.softap_edit_dialog_delete_title)
+				.setTitle(title)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
@@ -597,9 +600,9 @@ public class MainActivity extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
 			ViewHolder holder;
-
+			SoftApXmlModel softap = mSoftApList.get(position);
 			if (convertView == null) {
-				SoftApXmlModel softap = mSoftApList.get(position);
+				
 				view = View.inflate(MainActivity.this, R.layout.softap_item,
 						null);
 				holder = new ViewHolder();
@@ -618,14 +621,13 @@ public class MainActivity extends Activity {
 				MyOnCheckedChangeListener onCheckedChangeListener = new MyOnCheckedChangeListener(softap);
 				holder.cbSelectedHolder
 						.setOnCheckedChangeListener(onCheckedChangeListener);
-				holder.softap = softap;
 				view.setTag(holder);
 			} else {
 				view = convertView;
 				holder = (ViewHolder) view.getTag();
 			}
-
-			SoftApXmlModel softap = holder.softap;
+			holder.softap = softap;
+			
 			holder.tvSsidHolder.setText(softap.getSsid());
 			holder.tvPwdHolder.setText(softap.getPassword());
 			// cipher is [0,6]
