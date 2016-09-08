@@ -2,6 +2,7 @@ package com.afunx.service;
 
 import java.util.List;
 
+import com.afunx.view.ProgressBar4Executing;
 import com.afunx.xml.model.SoftApXmlModel;
 
 public class Testcases {
@@ -12,6 +13,15 @@ public class Testcases {
 	private int mTestConnTimeout;
 	private int mTestConnRetry;
 	private List<SoftApXmlModel> mSelectedSoftaps;
+	private ProgressBar4Executing mProgressBar;
+	
+	public ProgressBar4Executing getProgressBar() {
+		return mProgressBar;
+	}
+	
+	public void setProgressBar(ProgressBar4Executing progressBar) {
+		mProgressBar = progressBar;
+	}
 	
 	public int getTestMode() {
 		return mTestMode;

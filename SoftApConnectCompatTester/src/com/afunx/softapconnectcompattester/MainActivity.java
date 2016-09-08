@@ -311,6 +311,7 @@ public class MainActivity extends Activity {
 								testcases.setTestConnTimeout(connTimeout);
 								testcases.setTestCount(testCount);
 								testcases.setTestMode(testMode);
+								testcases.setProgressBar(mProgressBar4Executing);
 								log.debug("showStartTestDialog() testMode:"
 										+ testMode + ", testCount:" + testCount);
 								showExecProgressDialog();

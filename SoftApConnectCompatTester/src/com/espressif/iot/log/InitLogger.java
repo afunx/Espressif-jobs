@@ -19,5 +19,6 @@ public class InitLogger {
 				.setLevel(Level.DEBUG);
 		Logger.getLogger(com.afunx.util.FileUtil.class).setLevel(Level.OFF);
 		Logger.getLogger(com.afunx.service.SoftapTestService.class).setLevel(Level.DEBUG);
+		Logger.getLogger(com.espressif.iot.base.net.wifi.WifiAdmin.class).setLevel(Level.DEBUG);
 	}
 }

@@ -109,13 +109,81 @@ public class SoftapTestService extends Service {
 			}
 			return softap;
 		}
+
+		private boolean disconnectWifi(String ssid) {
+			gWifiAdmin.disableConnected(ssid);
+			while (gWifiAdmin.isWifiConnected(ssid)) {
+				// wait wifi disconnected
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		private long connectWifi(int connTimeout, int connRetry, String ssid,
+				WifiCipherType type,boolean isSsidHidden,String password) {
+			final long startTimestamp = System.currentTimeMillis();
+			final long retryTimestamp = 1000 * connTimeout / connRetry;
+			long currentTimestamp = startTimestamp;
+			long costTimestamp = 0;
+			// enable connected first time
+			gWifiAdmin.enableConnected(ssid, type, isSsidHidden, password);
+			int connTime = 1;
+			while (costTimestamp < 1000 * connTimeout) {
+				if (costTimestamp / connTime > retryTimestamp) {
+					gWifiAdmin.enableConnected(ssid, type, isSsidHidden,
+							password);
+					++connTime;
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// return 0 means fail
+					return 0;
+				}
+				currentTimestamp = System.currentTimeMillis();
+				costTimestamp = currentTimestamp - startTimestamp;
+				if(gWifiAdmin.isWifiConnected(ssid)){
+					return costTimestamp;
+				}
+			}
+			// return -1 means fail
+			return -1;
+		}
+		
+		private void onSuc(Testcase testcase,long cosumeTimestamp) {
+			
+		}
+		
+		private void onFail(Testcase testcase) {
+			
+		}
 		
 		private void doTestcaseTask(Testcase testcase) {
 			log.debug("doTestcaseTask() testcase:" + testcase);
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			final int connTimeout = testcase.getConnTimeout();
+			final int connRetry = testcase.getConnRetry();
+			final String ssid = testcase.getSsid();
+			final WifiCipherType type = testcase.getWifiCipherType();
+			final boolean isSsidHidden = testcase.getIsSsidHidden();
+			final String password = testcase.getPwd();
+			// 1. disable wifi
+			if (!disconnectWifi(ssid)) {
+				// cancel
+				return;
+			}
+			// 2. connect wifi
+			long result = connectWifi(connTimeout, connRetry, ssid, type,
+					isSsidHidden, password);
+			if (result == 0) {
+				// cancel
+			} else if (result < 0) {
+				// fail to connect wifi
+			} else {
+				// suc to connect wifi
 			}
 		}
 		
@@ -144,6 +212,7 @@ public class SoftapTestService extends Service {
 						// do testcase task
 					}
 					log.debug("doTestcaseTask() finished");
+					mTestcases.getProgressBar().dismiss();
 				}
 			};
 			mThread.start();
