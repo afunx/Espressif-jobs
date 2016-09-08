@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
@@ -186,6 +187,9 @@ public class MainActivity extends Activity {
 
 		Intent intent = new Intent(this, SoftapTestService.class);
 		bindService(intent, sc, Context.BIND_AUTO_CREATE);
+		
+		// keep screeen on
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
 	
 	@Override
