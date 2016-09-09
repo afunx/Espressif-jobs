@@ -68,7 +68,7 @@ public class LogConfigurator
     
     public static final int DefaultMaxBackupSize = 200;
     
-    private static final long DefaultMaxFileSize = 1024 * 1024 * 10; // 10 MB
+    private static final long DefaultMaxFileSize = 1024 * 100; // 100 K
     
     private static final boolean DefaultImmediateFlush = true;
     
@@ -160,12 +160,12 @@ public class LogConfigurator
     private void configureFileAppender()
     {
         final Logger root = Logger.getRootLogger();
-        final RollingFileAppender rollingFileAppender = createFileAppender();
+        final MyRollingFileAppender rollingFileAppender = createFileAppender();
 
         root.addAppender(rollingFileAppender);
     }
     
-    public static RollingFileAppender createFileAppender()
+    public static MyRollingFileAppender createFileAppender()
     {
         return createFileAppender(DefaultFilePattern,
             DefaultLogFileDirPath + DefaultLogFileName,
@@ -174,15 +174,15 @@ public class LogConfigurator
             DefaultImmediateFlush);
     }
     
-    public static RollingFileAppender createFileAppender(String filePattern, String fileName, int maxBackupSize,
+    public static MyRollingFileAppender createFileAppender(String filePattern, String fileName, int maxBackupSize,
         long maxFileSize, boolean immediateFlush)
     {
-        final RollingFileAppender rollingFileAppender;
+        final MyRollingFileAppender rollingFileAppender;
         final Layout fileLayout = new PatternLayout(filePattern);
         
         try
         {
-            rollingFileAppender = new RollingFileAppender(fileLayout, fileName);
+            rollingFileAppender = new MyRollingFileAppender(fileLayout, fileName);
         }
         catch (final IOException e)
         {
