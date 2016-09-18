@@ -98,7 +98,7 @@ public class SoftapTestService extends Service {
 		private SoftApXmlModel getNextSoftap(Testcases testcases) {
 			++mTotalCount;
 			List<SoftApXmlModel> softaps = testcases.getSelectedSoftaps();
-			int size = testcases.getTestCount();
+			int size = testcases.getSelectedSoftaps().size();
 			SoftApXmlModel softap = softaps.get(mIndex4Next);//TODO index 2, size is 2
 			// 0: Single Cycle 1: Loop Cycle
 			switch (testcases.getTestMode()) {
