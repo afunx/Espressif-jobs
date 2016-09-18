@@ -378,7 +378,7 @@ public class MainActivity extends Activity {
 		final EditText edittext = (EditText) view.findViewById(R.id.edt_edit_dialog);
 		edittext.setHint(R.string.softap_edit_dialog_ssid_hint);
 		String title = getString(R.string.softap_edit_dialog_ssid_title) + " " + mSoftApSelected.getSsid();
-
+		
 		new AlertDialog.Builder(this)
 				.setView(view)
 				.setTitle(title)

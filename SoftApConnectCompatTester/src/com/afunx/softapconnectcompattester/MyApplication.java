@@ -25,8 +25,10 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		CrashHandler.getInstance().init();
 		instance = this;
 		InitLogger.init();
+		
 		log.debug("onCreate()");
 	}
 	
