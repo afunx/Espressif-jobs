@@ -10,6 +10,16 @@ public class BleUtils {
 	}
 
 	/**
+	 * Open ble brutally without user's mind
+	 */
+	public static void openBleBrutally() {
+		BluetoothAdapter adapter = getAdapter();
+		if (!adapter.isEnabled()) {
+			BluetoothAdapter.getDefaultAdapter().enable();
+		}
+	}
+	
+	/**
 	 * Starts a scan for Bluetooth LE devices.
 	 * 
 	 * Results of the scan are reported using the

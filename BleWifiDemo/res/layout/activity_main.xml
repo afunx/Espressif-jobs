@@ -10,6 +10,13 @@
         android:gravity="center"
         android:text="@string/operation_step_0" />
 
+    <ProgressBar
+        android:id="@+id/pb_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+    
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
@@ -22,9 +29,6 @@
         </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/pb_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    
 
 </LinearLayout>

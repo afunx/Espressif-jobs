@@ -25,6 +25,17 @@ public class BleDeviceAdapter extends BaseAdapter {
 	}
 	
 	/**
+	 * filter some device
+	 * 
+	 * @param device
+	 *            the device to be checked
+	 * @return true when the device is to be added or updated
+	 */
+	private boolean filter(BleDevice device) {
+		return true;
+	}
+	
+	/**
 	 * get ble device from mBleDeviceList according to device
 	 * 
 	 * @param device
@@ -42,7 +53,10 @@ public class BleDeviceAdapter extends BaseAdapter {
 		return result;
 	}
 	
-	private void addOrUpdateDeviceInternal(BleDevice device) {
+	private boolean addOrUpdateDeviceInternal(BleDevice device) {
+		if (!filter(device)) {
+			return false;
+		}
 		BleDevice deviceInList = getBleDevice(device);
 		if (deviceInList == null) {
 			// add
@@ -50,7 +64,10 @@ public class BleDeviceAdapter extends BaseAdapter {
 		} else {
 			// update
 			deviceInList.setRssi(device.getRssi());
+			deviceInList.setBluetoothDevice(device.getBluetoothDevice());
+			deviceInList.setScanRecord(device.getScanRecord());
 		}
+		return true;
 	}
 	
 	/**
@@ -60,8 +77,9 @@ public class BleDeviceAdapter extends BaseAdapter {
 	 *            the device to be added or updated
 	 */
 	public void addOrUpdateDevice(BleDevice device) {
-		addOrUpdateDeviceInternal(device);
-		notifyDataSetChanged();
+		if (addOrUpdateDeviceInternal(device)) {
+			notifyDataSetChanged();
+		}
 	}
 	
 	/**
@@ -71,10 +89,15 @@ public class BleDeviceAdapter extends BaseAdapter {
 	 *            the device list to be added or updated
 	 */
 	public void addOrUpdateDeviceList(List<BleDevice> deviceList) {
+		boolean isChanged = false;
 		for (BleDevice device : deviceList) {
-			addOrUpdateDeviceInternal(device);
+			if (addOrUpdateDeviceInternal(device)) {
+				isChanged = true;
+			}
 		}
-		notifyDataSetChanged();
+		if (isChanged) {
+			notifyDataSetChanged();
+		}
 	}
 	
 	/**

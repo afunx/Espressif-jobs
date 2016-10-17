@@ -10,9 +10,15 @@ import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
+	
+	private static final String TAG = "MainActivity";
 	
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	
@@ -23,8 +29,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// it is brutally sometimes
+		BleUtils.openBleBrutally();
 		init();
-		
+		startLeScan();
 	}
 	
 	private void init() {
@@ -39,9 +47,21 @@ public class MainActivity extends Activity {
 				doRefresh();
 			}
 		});
+		
 		// ble device adapter
 		mBleDeviceAdapter = new BleDeviceAdapter(this);
 		mListView.setAdapter(mBleDeviceAdapter);
+		// listview OnItemClickListener
+		mListView.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Log.i(TAG, "item " + position + " is selected");
+			}
+			
+		});
+		
 		// LeScanCallback
 		mLeScanCallback = new LeScanCallback() {
 			@Override
@@ -59,16 +79,24 @@ public class MainActivity extends Activity {
 		// clear ble devices in UI
 		mBleDeviceAdapter.clear();
 		// start scan
-		BleUtils.startLeScan(mLeScanCallback);
+		startLeScan();
 		// stop swipe refresh refreshing
 		mSwipeRefreshLayout.setRefreshing(false);
+	}
+	
+	private void startLeScan() {
+		BleUtils.startLeScan(mLeScanCallback);
+	}
+	
+	private void stopLeScan() {
+		BleUtils.stopLeScan(mLeScanCallback);
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		// stop scan
-		BleUtils.stopLeScan(mLeScanCallback);
+		stopLeScan();
 	}
 	
 }
