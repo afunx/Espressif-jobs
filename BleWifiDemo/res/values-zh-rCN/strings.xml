@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">BleWifiDemo</string>
+
+    <!-- operation steps -->
+    <string name="operation_step_0">请选择一个蓝牙设备</string>
+
+    <!-- others -->
+    <string name="device_name_unknown_device">未知设备</string>
+    <string name="device_address">地址</string>
+    <string name="device_signal">信号</string>
+</resources>

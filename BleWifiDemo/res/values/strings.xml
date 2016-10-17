@@ -1,5 +1,12 @@
 <resources>
 
     <string name="app_name">BleWifiDemo</string>
+    
+    <!-- operation steps -->
+    <string name="operation_step_0">Please Select A Ble Device</string>
 
+    <!-- others -->
+    <string name="device_name_unknown_device">Unkonwn Device</string>
+    <string name="device_address">Address</string>
+    <string name="device_signal">Signal</string>
 </resources>

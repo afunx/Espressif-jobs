@@ -5,3 +5,8 @@ SoftApConnectCompatTester/bin
 SoftApConnectCompatTester/gen
 SoftApConnectCompatTester/proguard
 SoftApConnectCompatTester/.DS_Store
+#BleWifiDemo
+BleWifiDemo/bin
+BleWifiDemo/gen
+BleWifiDemo/proguard
+BleWifiDemo/.DS_Store
