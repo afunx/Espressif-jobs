@@ -1,12 +1,14 @@
 package com.afunx.blewifidemo;
 
 import com.afunx.ble.adapter.BleDeviceAdapter;
+import com.afunx.ble.constants.BleKeys;
 import com.afunx.ble.device.BleDevice;
 import com.afunx.ble.utils.BleUtils;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -32,7 +34,18 @@ public class MainActivity extends Activity {
 		// it is brutally sometimes
 		BleUtils.openBleBrutally();
 		init();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		startLeScan();
+	}
+	
+	@Override
+	protected void onPause() {
+		stopLeScan();
+		super.onPause();
 	}
 	
 	private void init() {
@@ -58,6 +71,10 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Log.i(TAG, "item " + position + " is selected");
+				Intent intent = new Intent(MainActivity.this, ConnectWifiActivity.class);
+				BleDevice bleDevice = (BleDevice) mBleDeviceAdapter.getItem(position);
+				intent.putExtra(BleKeys.BLE_ADDRESS, bleDevice.getBluetoothDevice().getAddress());
+				startActivity(intent);
 			}
 			
 		});
@@ -90,13 +107,6 @@ public class MainActivity extends Activity {
 	
 	private void stopLeScan() {
 		BleUtils.stopLeScan(mLeScanCallback);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// stop scan
-		stopLeScan();
 	}
 	
 }
