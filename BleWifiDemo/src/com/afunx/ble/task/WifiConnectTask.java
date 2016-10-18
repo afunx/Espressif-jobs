@@ -21,7 +21,6 @@ public class WifiConnectTask implements Runnable {
 	private final String mBleAddress;
 	private final Object mLockConnect = new Object();
 	private final Object mLockDiscover = new Object();
-	private volatile boolean mIsConnected;
 	private BluetoothGatt mBluetoothGatt;
 	private String mSsid;
 	private String mPwd;
@@ -30,6 +29,7 @@ public class WifiConnectTask implements Runnable {
 	
 	private static final long INTERVAL_WRITE_GATT_CHAR = 200;
 	private static final long TIMEOUT_SERVICE_DISCOVER = 1000;
+	private static final long TIMEOUT_BLE_CONNECT = 5000;
 
 	public void setSsid(String ssid) {
 		mSsid = ssid;
@@ -67,17 +67,10 @@ public class WifiConnectTask implements Runnable {
 					+ ",newState:" + newState + "Thread:" + Thread.currentThread());
 			switch(newState){
 			case BluetoothProfile.STATE_CONNECTED:
-				mIsConnected = true;
 				notifyLockConnect();
 				break;
 			case BluetoothProfile.STATE_DISCONNECTED:
-				if(status==BluetoothProfile.STATE_DISCONNECTED) {
-					mIsConnected = false;
-					notifyLockConnect();
-				}
-				else if(status==BluetoothProfile.STATE_CONNECTED) {
-					connectAsync();
-				}
+				connectAsync();
 				break;
 			}
 		}
@@ -174,7 +167,6 @@ public class WifiConnectTask implements Runnable {
 	@Override
 	public void run() {
 		Log.i(TAG, "Thread:" + Thread.currentThread());
-		mIsConnected = false;
 		synchronized (mLockDiscover) {
 			synchronized (mLockConnect) {
 				// connect async
@@ -182,50 +174,45 @@ public class WifiConnectTask implements Runnable {
 					Log.i(TAG, "connectAsync() suc");
 					// wait connect result
 					try {
-						mLockConnect.wait();
+						mLockConnect.wait(TIMEOUT_BLE_CONNECT);
 					} catch (InterruptedException ignore) {
-						ignore.printStackTrace();
-					}
-					if (!mIsConnected) {
 						Log.i(TAG, "fail to connect ble: " + mBleAddress);
 						doFailCallback();
 						return;
-					} else {
-						mBluetoothGatt.discoverServices();
-						try {
-							mLockDiscover.wait(TIMEOUT_SERVICE_DISCOVER);
-						} catch (InterruptedException ignore) {
-							Log.i(TAG, "fail to discover services");
-							doFailCallback();
-							return;
-						}
-						// get characteristic
-						final UUID serviceUuid = BleKeys.UUID_WIFI_SERVICE;
-						final UUID characteristic = BleKeys.UUID_CONFIGURE_CHARACTERISTIC;
-						final BluetoothGattService gattService = mBluetoothGatt
-								.getService(serviceUuid);
-						if (gattService == null) {
-							Log.w(TAG, "fail to get service: " + serviceUuid
-									+ ", gatt:" + mBluetoothGatt);
-							doFailCallback();
-							return;
-						}
-						final BluetoothGattCharacteristic gattCharacteristic = gattService
-								.getCharacteristic(characteristic);
-						if (gattCharacteristic == null) {
-							Log.w(TAG, "fail to get characteristic: "
-									+ characteristic);
-							doFailCallback();
-							return;
-						}
-						// send wifi ssid and pwd
-						sendWifiSsidPwd(gattCharacteristic);
-						doSucCallback();
 					}
-				} else {
-					Log.i(TAG, "connectAsync() fail");
-					doFailCallback();
+
+					mBluetoothGatt.discoverServices();
+					try {
+						mLockDiscover.wait(TIMEOUT_SERVICE_DISCOVER);
+					} catch (InterruptedException ignore) {
+						Log.i(TAG, "fail to discover services");
+						doFailCallback();
+						return;
+					}
+					// get characteristic
+					final UUID serviceUuid = BleKeys.UUID_WIFI_SERVICE;
+					final UUID characteristic = BleKeys.UUID_CONFIGURE_CHARACTERISTIC;
+					final BluetoothGattService gattService = mBluetoothGatt
+							.getService(serviceUuid);
+					if (gattService == null) {
+						Log.w(TAG, "fail to get service: " + serviceUuid
+								+ ", gatt:" + mBluetoothGatt);
+						doFailCallback();
+						return;
+					}
+					final BluetoothGattCharacteristic gattCharacteristic = gattService
+							.getCharacteristic(characteristic);
+					if (gattCharacteristic == null) {
+						Log.w(TAG, "fail to get characteristic: "
+								+ characteristic);
+						doFailCallback();
+						return;
+					}
+					// send wifi ssid and pwd
+					sendWifiSsidPwd(gattCharacteristic);
+					doSucCallback();
 				}
+
 			}
 		}
 		Log.i(TAG, "connectAsync() exit");
