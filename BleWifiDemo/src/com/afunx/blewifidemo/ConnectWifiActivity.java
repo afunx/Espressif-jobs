@@ -7,7 +7,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,8 +28,25 @@ public class ConnectWifiActivity extends Activity {
 		init();
 	}
 
+	// set window attributes
+	private void setWindowAttributes() {
+		Window window = getWindow();
+		WindowManager.LayoutParams layoutParams = window.getAttributes();
+		// get display pixel of width and height
+		final int width = getResources().getDisplayMetrics().widthPixels;
+		final int height = getResources().getDisplayMetrics().heightPixels;
+		final float scaleX = 0.5f;
+		final float scaleY = 0.5f;
+		layoutParams.width = (int) (width * scaleX);
+		layoutParams.height = (int) (height * scaleY);
+		window.setAttributes(layoutParams);
+	}
+	
 	private void init() {
 		setContentView(R.layout.activity_dialog);
+
+		setWindowAttributes();
+
 		mEdtSsid = (EditText) findViewById(R.id.edtSsid);
 		mEdtPwd = (EditText) findViewById(R.id.edtPwd);
 		mBtnConfirm = (Button) findViewById(R.id.btn_confirm_wifi);
@@ -50,7 +69,6 @@ public class ConnectWifiActivity extends Activity {
 		task.setSsid(ssid);
 		task.setPassword(pwd);
 		Runnable callbackSuc = new Runnable() {
-
 			@Override
 			public void run() {
 				mHandler.post(new Runnable(){
