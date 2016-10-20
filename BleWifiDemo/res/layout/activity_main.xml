@@ -27,7 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="@string/filter" />
+            android:text="@string/filter"
+            android:checked="true"
+            android:visibility="gone" />
 
     </LinearLayout>
 

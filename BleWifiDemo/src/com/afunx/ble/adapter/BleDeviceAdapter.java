@@ -134,6 +134,11 @@ public class BleDeviceAdapter extends BaseAdapter {
 		}
 	}
 	
+	/**
+	 * get count after filter
+	 * 
+	 * @return return count after filter
+	 */
 	private int getCountInternal() {
 		if (!mIsFilterOpen) {
 			return mBleDeviceList.size();
@@ -148,6 +153,13 @@ public class BleDeviceAdapter extends BaseAdapter {
 		}
 	}
 	
+	/**
+	 * get item after filter
+	 * 
+	 * @param position
+	 *            the position
+	 * @return item after filter
+	 */
 	private BleDevice getItemInternal(int position) {
 		if (!mIsFilterOpen) {
 			return mBleDeviceList.get(position);

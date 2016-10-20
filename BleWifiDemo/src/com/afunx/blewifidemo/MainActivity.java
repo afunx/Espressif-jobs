@@ -103,13 +103,12 @@ public class MainActivity extends Activity {
 				mBleDeviceAdapter.setIsFilterOpen(isChecked);
 			}
 		});
+		mBleDeviceAdapter.setIsFilterOpen(mFilterCb.isChecked());
 	}
 
 	private void doRefresh() {
 		// clear ble devices in UI
 		mBleDeviceAdapter.clear();
-		// start scan
-		startLeScan();
 		// stop swipe refresh refreshing
 		mSwipeRefreshLayout.setRefreshing(false);
 	}
