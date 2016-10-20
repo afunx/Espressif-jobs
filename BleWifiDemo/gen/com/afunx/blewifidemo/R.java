@@ -16,14 +16,15 @@ public final class R {
     }
     public static final class id {
         public static final int btn_confirm_wifi=0x7f060002;
+        public static final int cb_filter=0x7f060003;
         public static final int edtPwd=0x7f060001;
         public static final int edtSsid=0x7f060000;
-        public static final int lv_devices=0x7f060005;
-        public static final int pb_empty=0x7f060003;
-        public static final int swipeRefreshLayout=0x7f060004;
-        public static final int tv_dev_addr=0x7f060007;
-        public static final int tv_dev_name=0x7f060006;
-        public static final int tv_dev_sig=0x7f060008;
+        public static final int lv_devices=0x7f060006;
+        public static final int pb_empty=0x7f060004;
+        public static final int swipeRefreshLayout=0x7f060005;
+        public static final int tv_dev_addr=0x7f060008;
+        public static final int tv_dev_name=0x7f060007;
+        public static final int tv_dev_sig=0x7f060009;
     }
     public static final class layout {
         public static final int activity_dialog=0x7f030000;
@@ -42,6 +43,7 @@ public final class R {
         public static final int device_name_unknown_device=0x7f040002;
         public static final int device_signal=0x7f040004;
         public static final int dialog_title=0x7f040008;
+        public static final int filter=0x7f04000b;
         /**  operation steps 
  operation steps 
          */

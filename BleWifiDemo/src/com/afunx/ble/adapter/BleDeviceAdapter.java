@@ -1,9 +1,11 @@
 package com.afunx.ble.adapter;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import com.afunx.ble.device.BleDevice;
+import com.afunx.ble.utils.BleDeviceUtils;
 import com.afunx.blewifidemo.R;
 
 import android.content.Context;
@@ -18,6 +20,7 @@ public class BleDeviceAdapter extends BaseAdapter {
 
 	private final List<BleDevice> mBleDeviceList;
 	private final Context mContext;
+	private boolean mIsFilterOpen;
 
 	public BleDeviceAdapter(Context context) {
 		mBleDeviceList = new ArrayList<BleDevice>();
@@ -25,14 +28,41 @@ public class BleDeviceAdapter extends BaseAdapter {
 	}
 	
 	/**
+	 * set filter open or close
+	 * 
+	 * @param isFilterOpen
+	 *            true means open while false means close
+	 */
+	public void setIsFilterOpen(boolean isFilterOpen) {
+		if (isFilterOpen != mIsFilterOpen) {
+			mIsFilterOpen = isFilterOpen;
+			notifyDataSetChanged();
+		}
+	}
+	
+	/**
+	 * check whether the ble device belong to Espressif
+	 * 
+	 * @param device
+	 *            the ble device to be checked
+	 * @return whether the ble device belong to Espressif
+	 */
+	private boolean isEspBleDevice(BleDevice device) {
+		return BleDeviceUtils.isEspBleDevice(device);
+	}
+
+	/**
 	 * filter some device
 	 * 
 	 * @param device
-	 *            the device to be checked
+	 *            the device to be filtered
 	 * @return true when the device is to be added or updated
 	 */
-	private boolean filter(BleDevice device) {
-		return true;
+	private boolean filterInterval(BleDevice device) {
+		if (!mIsFilterOpen) {
+			return true;
+		}
+		return isEspBleDevice(device);
 	}
 	
 	/**
@@ -53,10 +83,14 @@ public class BleDeviceAdapter extends BaseAdapter {
 		return result;
 	}
 	
+	/**
+	 * add or update ble device
+	 * 
+	 * @param device
+	 *            the device to be added or updated
+	 * @return whether the device is added or updated
+	 */
 	private boolean addOrUpdateDeviceInternal(BleDevice device) {
-		if (!filter(device)) {
-			return false;
-		}
 		BleDevice deviceInList = getBleDevice(device);
 		if (deviceInList == null) {
 			// add
@@ -67,9 +101,9 @@ public class BleDeviceAdapter extends BaseAdapter {
 			deviceInList.setBluetoothDevice(device.getBluetoothDevice());
 			deviceInList.setScanRecord(device.getScanRecord());
 		}
-		return true;
+		return filterInterval(device);
 	}
-	
+
 	/**
 	 * add or update device and notify data set changed
 	 * 
@@ -100,6 +134,37 @@ public class BleDeviceAdapter extends BaseAdapter {
 		}
 	}
 	
+	private int getCountInternal() {
+		if (!mIsFilterOpen) {
+			return mBleDeviceList.size();
+		} else {
+			int count = 0;
+			for (BleDevice device : mBleDeviceList) {
+				if (BleDeviceUtils.isEspBleDevice(device)) {
+					count++;
+				}
+			}
+			return count;
+		}
+	}
+	
+	private BleDevice getItemInternal(int position) {
+		if (!mIsFilterOpen) {
+			return mBleDeviceList.get(position);
+		} else {
+			int index = 0;
+			for (BleDevice device : mBleDeviceList) {
+				if (BleDeviceUtils.isEspBleDevice(device)) {
+					if (index == position) {
+						return device;
+					}
+					index++;
+				}
+			}
+			throw new ConcurrentModificationException();
+		}
+	}
+	
 	/**
 	 * clear deviceList and notify data set invalidated
 	 */
@@ -110,12 +175,12 @@ public class BleDeviceAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return mBleDeviceList.size();
+		return getCountInternal();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mBleDeviceList.get(position);
+		return getItemInternal(position);
 	}
 
 	@Override
@@ -144,7 +209,7 @@ public class BleDeviceAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		// set view content
-		final BleDevice device = mBleDeviceList.get(position);
+		final BleDevice device = getItemInternal(position);
 		final Resources resources = mContext.getResources();
 		// device name
 		String devName = device.getBluetoothDevice().getName();

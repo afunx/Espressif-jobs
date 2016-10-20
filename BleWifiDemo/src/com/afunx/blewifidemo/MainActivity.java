@@ -15,6 +15,8 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	
 	private ListView mListView;
+	private CheckBox mFilterCb;
 	private BleDeviceAdapter mBleDeviceAdapter;
 	private LeScanCallback mLeScanCallback;
 	
@@ -90,6 +93,16 @@ public class MainActivity extends Activity {
 				mBleDeviceAdapter.addOrUpdateDevice(bleDevice);
 			}
 		};
+		
+		// Filter CheckBox
+		mFilterCb = (CheckBox) findViewById(R.id.cb_filter);
+		mFilterCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				mBleDeviceAdapter.setIsFilterOpen(isChecked);
+			}
+		});
 	}
 
 	private void doRefresh() {

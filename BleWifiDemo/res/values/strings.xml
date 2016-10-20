@@ -17,4 +17,5 @@
     <string name="dialog_title">Wi-Fi Configure</string>
     <string name="configure_suc">Configure Suc</string>
     <string name="configure_fail">Configure Fail</string>
+    <string name="filter">Filter</string>
 </resources>

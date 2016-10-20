@@ -17,4 +17,5 @@
     <string name="dialog_title">Wi-Fi 配置</string>
     <string name="configure_suc">配置成功</string>
     <string name="configure_fail">配置失败</string>
+    <string name="filter">过滤</string>
 </resources>
