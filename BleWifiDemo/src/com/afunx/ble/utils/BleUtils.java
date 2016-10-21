@@ -1,10 +1,20 @@
 package com.afunx.ble.utils;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 
 public class BleUtils {
-
+	
+	/**
+	 * Callback of ble
+	 */
+	public interface Callback {
+		public void onCharacteristicChanged(BluetoothGatt gatt,
+				BluetoothGattCharacteristic characteristic);
+	}
+	
 	private static BluetoothAdapter getAdapter() {
 		return BluetoothAdapter.getDefaultAdapter();
 	}

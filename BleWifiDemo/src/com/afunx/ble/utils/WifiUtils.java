@@ -2,7 +2,6 @@ package com.afunx.ble.utils;
 
 import java.util.List;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

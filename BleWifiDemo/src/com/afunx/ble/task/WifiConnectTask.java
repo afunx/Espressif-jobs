@@ -3,12 +3,15 @@ package com.afunx.ble.task;
 import java.util.UUID;
 
 import com.afunx.ble.constants.BleKeys;
+import com.afunx.ble.utils.BleUtils;
+import com.afunx.ble.utils.ByteUtils;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
@@ -26,6 +29,7 @@ public class WifiConnectTask implements Runnable {
 	private String mPwd;
 	private Runnable mCallbackSuc;
 	private Runnable mCallbackFail;
+	private BleUtils.Callback mCallbackBle;
 	
 	private static final long INTERVAL_WRITE_GATT_CHAR = 200;
 	private static final long TIMEOUT_SERVICE_DISCOVER = 1000;
@@ -47,6 +51,10 @@ public class WifiConnectTask implements Runnable {
 		mCallbackFail = callbackFail;
 	}
 	
+	public void setBleCallback(BleUtils.Callback callbackBle) {
+		mCallbackBle = callbackBle;
+	}
+	
 	private void notifyLockConnect() {
 		synchronized (mLockConnect) {
 			mLockConnect.notify();
@@ -64,7 +72,7 @@ public class WifiConnectTask implements Runnable {
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 				int newState) {
 			Log.i(TAG, "onConnectionStateChange() status:" + status
-					+ ",newState:" + newState + "Thread:" + Thread.currentThread());
+					+ ",newState:" + newState);
 			switch(newState){
 			case BluetoothProfile.STATE_CONNECTED:
 				notifyLockConnect();
@@ -76,13 +84,63 @@ public class WifiConnectTask implements Runnable {
 		}
 
 		@Override
+		public void onCharacteristicRead(BluetoothGatt gatt,
+				BluetoothGattCharacteristic characteristic, int status) {
+			Log.i(TAG, "onCharacteristicRead() characteristic:"
+					+ characteristic + ",status:" + status);
+		}
+
+		@Override
+		public void onCharacteristicWrite(BluetoothGatt gatt,
+				BluetoothGattCharacteristic characteristic, int status) {
+			Log.i(TAG, "onCharacteristicWrite() characteristic:"
+					+ characteristic + ",status:" + status);
+		}
+
+		@Override
+		public void onDescriptorRead(BluetoothGatt gatt,
+				BluetoothGattDescriptor descriptor, int status) {
+			Log.i(TAG, "onDescriptorRead() descriptor:" + descriptor
+					+ ",status:" + status);
+		}
+
+		@Override
+		public void onDescriptorWrite(BluetoothGatt gatt,
+				BluetoothGattDescriptor descriptor, int status) {
+			Log.i(TAG, "onDescriptorRead() descriptor:" + descriptor
+					+ ",status:" + status);
+		}
+
+		@Override
+		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+			Log.i(TAG, "onReadRemoteRssi() rssi:" + rssi + ",status:" + status);
+		}
+
+		@Override
+		public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+			Log.i(TAG, "onMtuChanged() mtu:" + mtu + ",status:" + status);
+		}
+
+		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			Log.i(TAG, "onServicesDiscovered() status:" + status);
 			if(status==BluetoothGatt.GATT_SUCCESS) {
 				notifyLockDiscover();
 			}
 		}
-
+		
+		@Override
+		public void onCharacteristicChanged(BluetoothGatt gatt,
+				BluetoothGattCharacteristic characteristic) {
+			UUID uuid = characteristic.getUuid();
+			byte[] value = characteristic.getValue();
+			Log.i(TAG, "onCharacteristicChanged uuid:" + uuid + ", value:"
+					+ ByteUtils.prettyFormat(value));
+			if (mCallbackBle != null) {
+				mCallbackBle.onCharacteristicChanged(gatt, characteristic);
+			}
+		}
+		
 		@Override
 		public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
 			Log.i(TAG, "onReliableWriteCompleted() status:" + status);
@@ -153,7 +211,7 @@ public class WifiConnectTask implements Runnable {
 	
 
 	private void doSucCallback() {
-		if (mCallbackSuc!=null) {
+		if (mCallbackSuc != null) {
 			mCallbackSuc.run();
 		}
 	}

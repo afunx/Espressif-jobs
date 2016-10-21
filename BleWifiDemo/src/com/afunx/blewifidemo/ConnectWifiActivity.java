@@ -1,9 +1,15 @@
 package com.afunx.blewifidemo;
 
+import java.util.UUID;
+
 import com.afunx.ble.constants.BleKeys;
 import com.afunx.ble.task.WifiConnectTask;
+import com.afunx.ble.utils.BleUtils;
+import com.afunx.ble.utils.ByteUtils;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -97,6 +103,25 @@ public class ConnectWifiActivity extends Activity {
 			}
 		};
 		task.setFailCallback(callbackFail);
+		BleUtils.Callback bleCallback = new BleUtils.Callback() {
+
+			@Override
+			public void onCharacteristicChanged(BluetoothGatt gatt,
+					final BluetoothGattCharacteristic characteristic) {
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						UUID uuid = characteristic.getUuid();
+						byte[] value = characteristic.getValue();
+						String text = "uuid:" + uuid + ", value:"
+								+ ByteUtils.prettyFormat(value);
+						Toast.makeText(ConnectWifiActivity.this, text,
+								Toast.LENGTH_LONG).show();
+					}
+				});
+			}
+		};
+		task.setBleCallback(bleCallback);
 		new Thread(task).start();
 		finish();
 	}
