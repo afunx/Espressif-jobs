@@ -59,6 +59,7 @@ public class ConnectWifiActivity extends Activity {
 
 		mBleAddress = getIntent().getExtras().getString(BleKeys.BLE_ADDRESS);
 		mHandler = new Handler();
+		mFragmentSsid = (SsidSpinnerFragment) getFragmentManager().findFragmentById(R.id.fragment_ssid_spinner);
 	}
 	
 	private void configureWifi() {

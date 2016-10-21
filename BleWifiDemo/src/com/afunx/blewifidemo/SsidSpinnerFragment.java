@@ -52,7 +52,8 @@ public class SsidSpinnerFragment extends Fragment {
 	};
 
 	public String getSsid() {
-		return "spinnerSsid";
+		int position = mSpinner.getSelectedItemPosition();
+		return mAdapter.getSelectedSsid(position);
 	}
 	
 	@Override
