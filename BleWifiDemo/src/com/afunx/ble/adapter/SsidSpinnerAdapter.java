@@ -128,8 +128,7 @@ public class SsidSpinnerAdapter extends BaseAdapter {
 				scanResultInList.level = scanResult.level;
 			} else {
 				// add
-				if(!TextUtils.isEmpty(scanResult.SSID)) {
-					System.out.println("BH add: " + scanResult);
+				if (!TextUtils.isEmpty(scanResult.SSID)) {
 					mScanResultList.add(scanResult);
 				}
 			}

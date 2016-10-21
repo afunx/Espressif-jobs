@@ -2,8 +2,12 @@ package com.afunx.ble.utils;
 
 import java.util.List;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
@@ -83,4 +87,54 @@ public class WifiUtils {
 		}
 	}
 	
+	/**
+	 * get connected wifi ssid or null(if not connect)
+	 * 
+	 * @return connected wifi ssid or null(if not connect)
+	 */
+	public static String getConnectedWifiSsid(final Context context) {
+		// check whether wifi is connected
+		boolean isWifiConnected = false;
+		ConnectivityManager connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wiFiNetworkInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (wiFiNetworkInfo != null) {
+			isWifiConnected = wiFiNetworkInfo.isConnected();
+		}
+
+		if (!isWifiConnected) {
+			return null;
+		}
+		// get wifi connected ssid
+		WifiManager wifiManager = (WifiManager) context
+				.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+		String ssid = null;
+		if (wifiInfo != null && wifiInfo.getSSID() != null) {
+			int len = wifiInfo.getSSID().length();
+			// mWifiInfo.getBSSID() = "\"" + ssid + "\"";
+			if (wifiInfo.getSSID().startsWith("\"")
+					&& wifiInfo.getSSID().endsWith("\"")) {
+				ssid = wifiInfo.getSSID().substring(1, len - 1);
+			} else {
+				ssid = wifiInfo.getSSID();
+			}
+
+		}
+		return ssid;
+	}
+	
+	
+	/**
+	 * Open wifi brutally without user's mind
+	 */
+	public static void openWifiBrutally(Context context) {
+		WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        boolean isWifiEnabled = wifiManager.isWifiEnabled();
+		if (!isWifiEnabled) {
+			wifiManager.setWifiEnabled(true);
+		}
+	}
 }

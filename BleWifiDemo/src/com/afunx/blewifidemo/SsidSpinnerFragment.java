@@ -10,6 +10,7 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,25 @@ public class SsidSpinnerFragment extends Fragment {
 		public void onWifiScan(final List<ScanResult> scanResultList) {
 			mHandler.post(new Runnable() {
 				public void run() {
+					// check whether the onWifiScan() callback is called first time
+					boolean firstTime = mSpinner.getSelectedItemPosition() == -1;
 					// keep selected ssid immutable when spinner items changed
-					String selectedSsid = mAdapter.getSelectedSsid(mSpinner.getSelectedItemPosition());
+					String selectedSsid = mAdapter.getSelectedSsid(mSpinner
+							.getSelectedItemPosition());
 					mAdapter.addOrUpdateScanResultList(scanResultList);
-					int selectedPosition = mAdapter.getSelectedPosition(selectedSsid);
+					int selectedPosition = mAdapter
+							.getSelectedPosition(selectedSsid);
 					mSpinner.setSelection(selectedPosition);
+					// when first time, set selected item according to the wifi connected
+					if (firstTime) {
+						String ssidWifiConnected = WifiUtils
+								.getConnectedWifiSsid(getActivity());
+						if (!TextUtils.isEmpty(ssidWifiConnected)) {
+							int wifiSsidPosition = mAdapter
+									.getSelectedPosition(ssidWifiConnected);
+							mSpinner.setSelection(wifiSsidPosition);
+						}
+					}
 				}
 			});
 		}

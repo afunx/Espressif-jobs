@@ -4,6 +4,7 @@ import com.afunx.ble.adapter.BleDeviceAdapter;
 import com.afunx.ble.constants.BleKeys;
 import com.afunx.ble.device.BleDevice;
 import com.afunx.ble.utils.BleUtils;
+import com.afunx.ble.utils.WifiUtils;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		// it is brutally sometimes
 		BleUtils.openBleBrutally();
+		WifiUtils.openWifiBrutally(getApplicationContext());
 		init();
 	}
 	
