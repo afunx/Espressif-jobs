@@ -26,7 +26,11 @@ public class SsidSpinnerFragment extends Fragment {
 		public void onWifiScan(final List<ScanResult> scanResultList) {
 			mHandler.post(new Runnable() {
 				public void run() {
+					// keep selected ssid immutable when spinner items changed
+					String selectedSsid = mAdapter.getSelectedSsid(mSpinner.getSelectedItemPosition());
 					mAdapter.addOrUpdateScanResultList(scanResultList);
+					int selectedPosition = mAdapter.getSelectedPosition(selectedSsid);
+					mSpinner.setSelection(selectedPosition);
 				}
 			});
 		}

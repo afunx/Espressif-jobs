@@ -79,6 +79,41 @@ public class SsidSpinnerAdapter extends BaseAdapter {
 	}
 	
 	/**
+	 * get selected ssid by selected position
+	 * 
+	 * @param position
+	 *            the selected position
+	 * @return selected ssid by selected position
+	 */
+	public String getSelectedSsid(int position) {
+		if (position == -1) {
+			return null;
+		}
+		ScanResult scanResult = mScanResultList.get(position);
+		return scanResult.SSID;
+	}
+
+	/**
+	 * get selected position by selected ssid
+	 * 
+	 * @param ssid
+	 *            the selected ssid
+	 * @return selected position by selected ssid
+	 */
+	public int getSelectedPosition(String ssid) {
+		if (ssid == null) {
+			return -1;
+		}
+		for (int position = 0; position < mScanResultList.size(); position++) {
+			ScanResult scanResult = mScanResultList.get(position);
+			if (ssid.equals(scanResult.SSID)) {
+				return position;
+			}
+		}
+		return -1;
+	}
+	
+	/**
 	 * add ScanResult list
 	 * 
 	 * @param scanResult
