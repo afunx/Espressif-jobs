@@ -4,13 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
+   <!-- <EditText
         android:id="@+id/edtSsid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
         android:hint="@string/ssid_edit_hint"
-        android:inputType="textVisiblePassword" />
+        android:inputType="textVisiblePassword" /> -->
+        
+    <fragment
+        android:id="@+id/fragment_ssid_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        class="com.afunx.blewifidemo.SsidSpinnerFragment" />
+
     <EditText
         android:id="@+id/edtPwd"
         android:layout_width="match_parent"

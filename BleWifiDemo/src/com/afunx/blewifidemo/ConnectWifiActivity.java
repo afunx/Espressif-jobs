@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class ConnectWifiActivity extends Activity {
 	
-	private EditText mEdtSsid;
+	private SsidSpinnerFragment mFragmentSsid;
 	private EditText mEdtPwd;
 	private Button mBtnConfirm;
 	private String mBleAddress;
@@ -35,8 +35,8 @@ public class ConnectWifiActivity extends Activity {
 		// get display pixel of width and height
 		final int width = getResources().getDisplayMetrics().widthPixels;
 		final int height = getResources().getDisplayMetrics().heightPixels;
-		final float scaleX = 0.5f;
-		final float scaleY = 0.5f;
+		final float scaleX = 0.6f;
+		final float scaleY = 0.6f;
 		layoutParams.width = (int) (width * scaleX);
 		layoutParams.height = (int) (height * scaleY);
 		window.setAttributes(layoutParams);
@@ -47,7 +47,6 @@ public class ConnectWifiActivity extends Activity {
 
 		setWindowAttributes();
 
-		mEdtSsid = (EditText) findViewById(R.id.edtSsid);
 		mEdtPwd = (EditText) findViewById(R.id.edtPwd);
 		mBtnConfirm = (Button) findViewById(R.id.btn_confirm_wifi);
 		mBtnConfirm.setOnClickListener(new OnClickListener() {
@@ -63,7 +62,7 @@ public class ConnectWifiActivity extends Activity {
 	}
 	
 	private void configureWifi() {
-		final String ssid = mEdtSsid.getText().toString();
+		final String ssid = mFragmentSsid.getSsid();
 		final String pwd = mEdtPwd.getText().toString();
 		WifiConnectTask task = WifiConnectTask.createInstance(this, mBleAddress);
 		task.setSsid(ssid);
