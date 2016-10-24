@@ -20,7 +20,7 @@ public class SsidSpinnerFragment extends Fragment {
 
 	private Spinner mSpinner;
 	private SsidSpinnerAdapter mAdapter;
-	private final long mInterval = 5000;
+	private final long mInterval = 500;
 	private Handler mHandler;
 	private WifiUtils.Callback mCallback = new WifiUtils.Callback() {
 		@Override
@@ -66,13 +66,14 @@ public class SsidSpinnerFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		Context context = getActivity().getApplicationContext();
-		WifiUtils.startWifiScan(context, mCallback, mInterval);
+		WifiUtils.startWifiScanOnce(context, mCallback, mInterval);
+//		WifiUtils.startWifiScan(context, mCallback, mInterval);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		WifiUtils.stopWifiScan();
+//		WifiUtils.stopWifiScan();
 	}
 	
 	@Override

@@ -16,10 +16,12 @@ public final class R {
     }
     public static final class id {
         public static final int btn_confirm_wifi=0x7f060002;
+        public static final int btn_scan=0x7f06000e;
         public static final int cb_filter=0x7f060003;
         public static final int edtPwd=0x7f060001;
         public static final int fragment_ssid_spinner=0x7f060000;
         public static final int lv_devices=0x7f060006;
+        public static final int lv_wifi_scan=0x7f06000d;
         public static final int pb_empty=0x7f060004;
         public static final int spn_ssid=0x7f06000a;
         public static final int swipeRefreshLayout=0x7f060005;
@@ -35,6 +37,7 @@ public final class R {
         public static final int ble_device_item=0x7f030002;
         public static final int fragment_ssid_spinner=0x7f030003;
         public static final int item_ssid=0x7f030004;
+        public static final int wifi_scan_spinner=0x7f030005;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
@@ -54,6 +57,7 @@ public final class R {
          */
         public static final int operation_step_0=0x7f040001;
         public static final int pwd_edit_hint=0x7f040006;
+        public static final int scan=0x7f04000c;
         public static final int ssid_edit_hint=0x7f040005;
     }
     public static final class style {

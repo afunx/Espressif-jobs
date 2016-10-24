@@ -48,6 +48,45 @@ public class WifiUtils {
 		}
 	}
 	
+	private static void startWifiScanOnceInternal(final Context context,
+			final Callback callback, final long interval) {
+		WifiManager wifiManager = (WifiManager) context
+				.getSystemService(Context.WIFI_SERVICE);
+		long startTimestamp = System.currentTimeMillis();
+		wifiManager.startScan();
+		
+		final long nap = 50;
+		do {
+			try {
+				Thread.sleep(nap);
+			} catch (InterruptedException ignore) {
+			}
+			List<ScanResult> scanResultList = wifiManager.getScanResults();
+			if (scanResultList != null && !scanResultList.isEmpty()) {
+				callback.onWifiScan(scanResultList);
+			}
+		} while (System.currentTimeMillis() - startTimestamp < interval);
+	}
+	
+	/**
+	 * start wifi Scan async once
+	 * 
+	 * @param context
+	 *            the context
+	 * @param callback
+	 *            the callback
+	 * @param interval
+	 *            the interval in milliseconds
+	 */
+	public static void startWifiScanOnce(final Context context,
+			final Callback callback, final long interval) {
+		new Thread() {
+			public void run() {
+				startWifiScanOnceInternal(context, callback, interval);
+			}
+		}.start();
+	}
+	
 	/**
 	 * start Wifi Scan async
 	 * 
