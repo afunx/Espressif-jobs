@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.afunx.ble.adapter.SsidSpinnerAdapter;
 import com.afunx.ble.utils.WifiUtils;
+import com.afunx.ble.widget.SpinnerButton;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -14,11 +15,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 
 public class SsidSpinnerFragment extends Fragment {
 
-	private Spinner mSpinner;
+	private SpinnerButton mSpinner2;
 	private SsidSpinnerAdapter mAdapter;
 	private final long mInterval = 500;
 	private Handler mHandler;
@@ -28,14 +28,14 @@ public class SsidSpinnerFragment extends Fragment {
 			mHandler.post(new Runnable() {
 				public void run() {
 					// check whether the onWifiScan() callback is called first time
-					boolean firstTime = mSpinner.getSelectedItemPosition() == -1;
+					boolean firstTime = mSpinner2.getSelectedItemPosition() == -1;
 					// keep selected ssid immutable when spinner items changed
-					String selectedSsid = mAdapter.getSelectedSsid(mSpinner
+					String selectedSsid = mAdapter.getSelectedSsid(mSpinner2
 							.getSelectedItemPosition());
 					mAdapter.addOrUpdateScanResultList(scanResultList);
 					int selectedPosition = mAdapter
 							.getSelectedPosition(selectedSsid);
-					mSpinner.setSelection(selectedPosition);
+					mSpinner2.setSelection(selectedPosition);
 					// when first time, set selected item according to the wifi connected
 					if (firstTime) {
 						String ssidWifiConnected = WifiUtils
@@ -43,7 +43,8 @@ public class SsidSpinnerFragment extends Fragment {
 						if (!TextUtils.isEmpty(ssidWifiConnected)) {
 							int wifiSsidPosition = mAdapter
 									.getSelectedPosition(ssidWifiConnected);
-							mSpinner.setSelection(wifiSsidPosition);
+							mSpinner2.setSelection(wifiSsidPosition);
+							mSpinner2.setText(ssidWifiConnected);
 						}
 					}
 				}
@@ -52,7 +53,7 @@ public class SsidSpinnerFragment extends Fragment {
 	};
 
 	public String getSsid() {
-		int position = mSpinner.getSelectedItemPosition();
+		int position = mSpinner2.getSelectedItemPosition();
 		return mAdapter.getSelectedSsid(position);
 	}
 	
@@ -67,23 +68,17 @@ public class SsidSpinnerFragment extends Fragment {
 		super.onResume();
 		Context context = getActivity().getApplicationContext();
 		WifiUtils.startWifiScanOnce(context, mCallback, mInterval);
-//		WifiUtils.startWifiScan(context, mCallback, mInterval);
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-//		WifiUtils.stopWifiScan();
-	}
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_ssid_spinner, container);
-		mSpinner = (Spinner) view.findViewById(R.id.spn_ssid);
 		Context context = getActivity();
 		mAdapter = new SsidSpinnerAdapter(context);
-		mSpinner.setAdapter(mAdapter);
+		mSpinner2 = (SpinnerButton) view.findViewById(R.id.spn_ssid);
+		mSpinner2.setAdapter(mAdapter);
+		mSpinner2.setCallback(mCallback);
 		return view;
 	}
 }

@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv_ssid"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -14,10 +14,10 @@
 
     <TextView
         android:id="@+id/tv_rssi"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </LinearLayout>

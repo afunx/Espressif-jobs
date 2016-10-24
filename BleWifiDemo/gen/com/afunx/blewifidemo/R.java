@@ -58,6 +58,7 @@ public final class R {
         public static final int operation_step_0=0x7f040001;
         public static final int pwd_edit_hint=0x7f040006;
         public static final int scan=0x7f04000c;
+        public static final int scaning=0x7f04000d;
         public static final int ssid_edit_hint=0x7f040005;
     }
     public static final class style {

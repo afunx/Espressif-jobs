@@ -19,4 +19,5 @@
     <string name="configure_fail">Configure Fail</string>
     <string name="filter">Filter</string>
     <string name="scan">Scan</string>
+    <string name="scaning">Scaning...</string>
 </resources>
