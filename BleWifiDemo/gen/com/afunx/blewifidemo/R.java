@@ -16,20 +16,19 @@ public final class R {
     }
     public static final class id {
         public static final int btn_confirm_wifi=0x7f060002;
-        public static final int btn_scan=0x7f06000e;
-        public static final int cb_filter=0x7f060003;
+        public static final int btn_scan=0x7f06000d;
         public static final int edtPwd=0x7f060001;
         public static final int fragment_ssid_spinner=0x7f060000;
-        public static final int lv_devices=0x7f060006;
-        public static final int lv_wifi_scan=0x7f06000d;
-        public static final int pb_empty=0x7f060004;
-        public static final int spn_ssid=0x7f06000a;
-        public static final int swipeRefreshLayout=0x7f060005;
-        public static final int tv_dev_addr=0x7f060008;
-        public static final int tv_dev_name=0x7f060007;
-        public static final int tv_dev_sig=0x7f060009;
-        public static final int tv_rssi=0x7f06000c;
-        public static final int tv_ssid=0x7f06000b;
+        public static final int lv_devices=0x7f060005;
+        public static final int lv_wifi_scan=0x7f06000c;
+        public static final int pb_empty=0x7f060003;
+        public static final int spn_ssid=0x7f060009;
+        public static final int swipeRefreshLayout=0x7f060004;
+        public static final int tv_dev_addr=0x7f060007;
+        public static final int tv_dev_name=0x7f060006;
+        public static final int tv_dev_sig=0x7f060008;
+        public static final int tv_rssi=0x7f06000b;
+        public static final int tv_ssid=0x7f06000a;
     }
     public static final class layout {
         public static final int activity_dialog=0x7f030000;
@@ -71,17 +70,6 @@ public final class R {
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         
-
-        Base application theme for API 11+. This theme completely replaces
-        AppBaseTheme from res/values/styles.xml on API 11+ devices.
-    
- API 11 theme customizations can go here. 
-
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-    
- API 14 theme customizations can go here. 
          */
         public static final int AppBaseTheme=0x7f050000;
         /**  Application theme. 

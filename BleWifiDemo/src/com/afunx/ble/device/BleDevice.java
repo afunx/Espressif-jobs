@@ -34,13 +34,10 @@ public class BleDevice {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
+		if ((obj instanceof BleDevice)) {
+			BleDevice other = (BleDevice) obj;
+			return mBluetoothDevice.getAddress().equals(other.mBluetoothDevice.getAddress());
 		}
-		if (!(obj instanceof BleDevice)) {
-			return false;
-		}
-		BleDevice other = (BleDevice) obj;
-		return mBluetoothDevice.equals(other.mBluetoothDevice);
+		return false;
 	}
 }

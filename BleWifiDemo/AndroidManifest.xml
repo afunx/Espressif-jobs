@@ -32,7 +32,7 @@
             android:name="com.afunx.blewifidemo.ConnectWifiActivity"
             android:label="@string/dialog_title"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
     </application>
 
