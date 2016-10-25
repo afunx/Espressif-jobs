@@ -23,17 +23,25 @@ public class WifiConnectTask implements Runnable {
 	private final Context mContext;
 	private final String mBleAddress;
 	private final Object mLockConnect = new Object();
+	private volatile boolean mIsConnectSuc = false;
 	private final Object mLockDiscover = new Object();
+	private volatile boolean mIsDiscoverSuc = false;
+	private final Object mLockFinish = new Object();
+	private volatile boolean mIsFinishSuc = false;
 	private BluetoothGatt mBluetoothGatt;
 	private String mSsid;
 	private String mPwd;
+	private Runnable mCallbackFinish;
+	private Runnable mCallbackTimeout;
 	private Runnable mCallbackSuc;
 	private Runnable mCallbackFail;
 	private BleUtils.Callback mCallbackBle;
+	private BluetoothGattCharacteristic mGattCharacteristic;
 	
 	private static final long INTERVAL_WRITE_GATT_CHAR = 200;
 	private static final long TIMEOUT_SERVICE_DISCOVER = 1000;
 	private static final long TIMEOUT_BLE_CONNECT = 5000;
+	private static final long TIMEOUT_BLE_CONNECT_WIFI = 20000;
 
 	public void setSsid(String ssid) {
 		mSsid = ssid;
@@ -41,6 +49,14 @@ public class WifiConnectTask implements Runnable {
 
 	public void setPassword(String password) {
 		mPwd = password;
+	}
+
+	public void setFinishCallback(Runnable callbackFinish) {
+		mCallbackFinish = callbackFinish;
+	}
+	
+	public void setTimeoutCallback(Runnable callbackTimeout) {
+		mCallbackTimeout = callbackTimeout;
 	}
 	
 	public void setSucCallback(Runnable callbackSuc) {
@@ -56,14 +72,23 @@ public class WifiConnectTask implements Runnable {
 	}
 	
 	private void notifyLockConnect() {
+		mIsConnectSuc = true;
 		synchronized (mLockConnect) {
 			mLockConnect.notify();
 		}
 	}
 	
 	private void notifyLockDiscover() {
+		mIsDiscoverSuc = true;
 		synchronized (mLockDiscover) {
 			mLockDiscover.notify();
+		}
+	}
+	
+	private void notifyLockFinish() {
+		mIsFinishSuc = true;
+		synchronized (mLockFinish) {
+			mLockFinish.notify();
 		}
 	}
 	
@@ -139,6 +164,7 @@ public class WifiConnectTask implements Runnable {
 			if (mCallbackBle != null) {
 				mCallbackBle.onCharacteristicChanged(gatt, characteristic);
 			}
+			notifyLockFinish();
 		}
 		
 		@Override
@@ -222,9 +248,41 @@ public class WifiConnectTask implements Runnable {
 		}
 	}
 	
+	private void enableNotification() {
+		// enable notification
+		if(mGattCharacteristic!=null) {
+			mBluetoothGatt.setCharacteristicNotification(mGattCharacteristic, true);
+		} else {
+			Log.w(TAG, "enableNotification() mGattCharacteristic is null");
+		}
+	}
+	
+	private void disableNotification() {
+		// disable notification
+		if (mBluetoothGatt != null && mGattCharacteristic != null) {
+			mBluetoothGatt.setCharacteristicNotification(mGattCharacteristic,
+					false);
+		} else {
+			Log.w(TAG, "disableNotification() mBluetoothGatt or mGattCharacteristic is null");
+		}
+	}
+	
+	private void close() {
+		if (mBluetoothGatt != null) {
+			mBluetoothGatt.disconnect();
+			mBluetoothGatt.close();
+			mBluetoothGatt = null;
+		}
+	}
+	
 	@Override
 	public void run() {
 		Log.i(TAG, "Thread:" + Thread.currentThread());
+		// clear state
+		mIsConnectSuc = false;
+		mIsDiscoverSuc = false;
+		mIsFinishSuc = false;
+		
 		synchronized (mLockDiscover) {
 			synchronized (mLockConnect) {
 				// connect async
@@ -234,6 +292,8 @@ public class WifiConnectTask implements Runnable {
 					try {
 						mLockConnect.wait(TIMEOUT_BLE_CONNECT);
 					} catch (InterruptedException ignore) {
+					}
+					if (!mIsConnectSuc) {
 						Log.i(TAG, "fail to connect ble: " + mBleAddress);
 						doFailCallback();
 						return;
@@ -243,10 +303,13 @@ public class WifiConnectTask implements Runnable {
 					try {
 						mLockDiscover.wait(TIMEOUT_SERVICE_DISCOVER);
 					} catch (InterruptedException ignore) {
+					}
+					if (!mIsDiscoverSuc) {
 						Log.i(TAG, "fail to discover services");
 						doFailCallback();
 						return;
 					}
+					
 					// get characteristic
 					final UUID serviceUuid = BleKeys.UUID_WIFI_SERVICE;
 					final UUID characteristic = BleKeys.UUID_CONFIGURE_CHARACTERISTIC;
@@ -268,12 +331,35 @@ public class WifiConnectTask implements Runnable {
 					}
 					// send wifi ssid and pwd
 					sendWifiSsidPwd(gattCharacteristic);
-					doSucCallback();
+					
+					mGattCharacteristic = gattCharacteristic;
+					
+					// enable notification
+					enableNotification();
+					
+					synchronized (mLockFinish) {
+						try {
+							mLockFinish.wait(TIMEOUT_BLE_CONNECT_WIFI);
+						} catch (InterruptedException ignore) {
+						} finally {
+							if (mIsFinishSuc) {
+								if (mCallbackFinish != null) {
+									mCallbackFinish.run();
+								}
+							} else {
+								if (mCallbackTimeout != null) {
+									mCallbackTimeout.run();
+								}
+							}
+							disableNotification();
+							close();
+						}
+					}
 				}
 
 			}
 		}
-		Log.i(TAG, "connectAsync() exit");
+		Log.i(TAG, "WifiConnectTask run() exit");
 	}
 
 }

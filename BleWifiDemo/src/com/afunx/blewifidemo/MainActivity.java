@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
 		// swipe refresh layout and listview
 		mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 		mListView = (ListView) findViewById(R.id.lv_devices);
-		mListView.setEmptyView(findViewById(R.id.pb_empty));
+//		mListView.setEmptyView(findViewById(R.id.pb_empty));
 		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {

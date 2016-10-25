@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/linearlayout_activity_main"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -25,13 +27,15 @@
     </LinearLayout>
 
     <ProgressBar
+        android:visibility="gone"
         android:id="@+id/pb_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         />
     
     <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@id/linearlayout_activity_main"
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -45,4 +49,4 @@
 
     
 
-</LinearLayout>
+</RelativeLayout>

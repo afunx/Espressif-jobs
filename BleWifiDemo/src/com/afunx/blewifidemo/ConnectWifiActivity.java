@@ -1,15 +1,14 @@
 package com.afunx.blewifidemo;
 
-import java.util.UUID;
-
 import com.afunx.ble.constants.BleKeys;
 import com.afunx.ble.task.WifiConnectTask;
 import com.afunx.ble.utils.BleUtils;
-import com.afunx.ble.utils.ByteUtils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -71,6 +70,11 @@ public class ConnectWifiActivity extends Activity {
 	private void configureWifi() {
 		final String ssid = mFragmentSsid.getSsid();
 		final String pwd = mEdtPwd.getText().toString();
+		final ProgressDialog dialog = new ProgressDialog(this);
+		dialog.setCancelable(false);
+		dialog.setMessage(getResources().getString(R.string.configuring));
+		dialog.show();
+		
 		WifiConnectTask task = WifiConnectTask.createInstance(this, mBleAddress);
 		task.setSsid(ssid);
 		task.setPassword(pwd);
@@ -80,13 +84,12 @@ public class ConnectWifiActivity extends Activity {
 				mHandler.post(new Runnable(){
 					@Override
 					public void run() {
-						Toast.makeText(ConnectWifiActivity.this,
-								R.string.configure_suc, Toast.LENGTH_SHORT)
-								.show();
+						final Context context = ConnectWifiActivity.this.getApplicationContext();
+						Toast.makeText(context, R.string.configure_suc,
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
-			
 		};
 		task.setSucCallback(callbackSuc);
 		Runnable callbackFail = new Runnable() {
@@ -95,14 +98,46 @@ public class ConnectWifiActivity extends Activity {
 				mHandler.post(new Runnable(){
 					@Override
 					public void run() {
-						Toast.makeText(ConnectWifiActivity.this,
-								R.string.configure_fail, Toast.LENGTH_SHORT)
-								.show();
+						dialog.dismiss();
+						finish();
+						final Context context = ConnectWifiActivity.this.getApplicationContext();
+						Toast.makeText(context, R.string.configure_fail,
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
 		};
 		task.setFailCallback(callbackFail);
+		Runnable callbackFinish = new Runnable() {
+			@Override
+			public void run() {
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						dialog.dismiss();
+						finish();
+					}
+				});
+
+			}
+		};
+		task.setFinishCallback(callbackFinish);
+		Runnable callbackTimeout = new Runnable() {
+			@Override
+			public void run() {
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						dialog.dismiss();
+						final Context context = ConnectWifiActivity.this.getApplicationContext();
+						Toast.makeText(context, R.string.configure_timeout,
+								Toast.LENGTH_LONG).show();
+						finish();
+					}
+				});
+			}
+		};
+		task.setTimeoutCallback(callbackTimeout);
 		BleUtils.Callback bleCallback = new BleUtils.Callback() {
 
 			@Override
@@ -111,11 +146,12 @@ public class ConnectWifiActivity extends Activity {
 				mHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						UUID uuid = characteristic.getUuid();
+//						UUID uuid = characteristic.getUuid();
 						byte[] value = characteristic.getValue();
-						String text = "uuid:" + uuid + ", value:"
-								+ ByteUtils.prettyFormat(value);
-						Toast.makeText(ConnectWifiActivity.this, text,
+//						String text = "uuid:" + uuid + ", value:"
+//								+ ByteUtils.prettyFormat(value);
+						String text = new String(value);
+						Toast.makeText(ConnectWifiActivity.this.getApplicationContext(), text,
 								Toast.LENGTH_LONG).show();
 					}
 				});
@@ -123,7 +159,6 @@ public class ConnectWifiActivity extends Activity {
 		};
 		task.setBleCallback(bleCallback);
 		new Thread(task).start();
-		finish();
 	}
 	
 }

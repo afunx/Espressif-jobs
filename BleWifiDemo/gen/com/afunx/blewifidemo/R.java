@@ -16,19 +16,20 @@ public final class R {
     }
     public static final class id {
         public static final int btn_confirm_wifi=0x7f060002;
-        public static final int btn_scan=0x7f06000d;
+        public static final int btn_scan=0x7f06000e;
         public static final int edtPwd=0x7f060001;
         public static final int fragment_ssid_spinner=0x7f060000;
-        public static final int lv_devices=0x7f060005;
-        public static final int lv_wifi_scan=0x7f06000c;
-        public static final int pb_empty=0x7f060003;
-        public static final int spn_ssid=0x7f060009;
-        public static final int swipeRefreshLayout=0x7f060004;
-        public static final int tv_dev_addr=0x7f060007;
-        public static final int tv_dev_name=0x7f060006;
-        public static final int tv_dev_sig=0x7f060008;
-        public static final int tv_rssi=0x7f06000b;
-        public static final int tv_ssid=0x7f06000a;
+        public static final int linearlayout_activity_main=0x7f060003;
+        public static final int lv_devices=0x7f060006;
+        public static final int lv_wifi_scan=0x7f06000d;
+        public static final int pb_empty=0x7f060004;
+        public static final int spn_ssid=0x7f06000a;
+        public static final int swipeRefreshLayout=0x7f060005;
+        public static final int tv_dev_addr=0x7f060008;
+        public static final int tv_dev_name=0x7f060007;
+        public static final int tv_dev_sig=0x7f060009;
+        public static final int tv_rssi=0x7f06000c;
+        public static final int tv_ssid=0x7f06000b;
     }
     public static final class layout {
         public static final int activity_dialog=0x7f030000;
@@ -42,6 +43,8 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int configure_fail=0x7f04000a;
         public static final int configure_suc=0x7f040009;
+        public static final int configure_timeout=0x7f04000b;
+        public static final int configuring=0x7f04000c;
         public static final int confirm=0x7f040007;
         public static final int device_address=0x7f040003;
         /**  others 
@@ -50,14 +53,14 @@ public final class R {
         public static final int device_name_unknown_device=0x7f040002;
         public static final int device_signal=0x7f040004;
         public static final int dialog_title=0x7f040008;
-        public static final int filter=0x7f04000b;
+        public static final int filter=0x7f04000d;
         /**  operation steps 
  operation steps 
          */
         public static final int operation_step_0=0x7f040001;
         public static final int pwd_edit_hint=0x7f040006;
-        public static final int scan=0x7f04000c;
-        public static final int scaning=0x7f04000d;
+        public static final int scan=0x7f04000e;
+        public static final int scaning=0x7f04000f;
         public static final int ssid_edit_hint=0x7f040005;
     }
     public static final class style {

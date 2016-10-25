@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">BLE WIFI DEMO V0.8.2</string>
+    <string name="app_name">BLE WIFI DEMO V0.8.5</string>
     
     <!-- operation steps -->
     <string name="operation_step_0">Please Select A Ble Device(drop down to refresh)</string>
@@ -17,7 +17,9 @@
     <string name="dialog_title">Wi-Fi Configure</string>
     <string name="configure_suc">Configure Suc</string>
     <string name="configure_fail">Configure Fail</string>
+    <string name="configure_timeout">Configure Timeout</string>
+    <string name="configuring">Configuring&#8230;</string>
     <string name="filter">Filter</string>
     <string name="scan">Scan</string>
-    <string name="scaning">Scaning...</string>
+    <string name="scaning">Scaning&#8230;</string>
 </resources>
