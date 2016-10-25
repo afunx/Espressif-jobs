@@ -3,7 +3,7 @@
     <string name="app_name">BLE WIFI DEMO V0.8.2</string>
     
     <!-- operation steps -->
-    <string name="operation_step_0">Please Select A Ble Device</string>
+    <string name="operation_step_0">Please Select A Ble Device(drop down to refresh)</string>
 
     <!-- others -->
     <string name="device_name_unknown_device">Unkonwn Device</string>

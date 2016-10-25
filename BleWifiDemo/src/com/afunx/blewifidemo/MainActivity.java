@@ -3,6 +3,7 @@ package com.afunx.blewifidemo;
 import com.afunx.ble.adapter.BleDeviceAdapter;
 import com.afunx.ble.constants.BleKeys;
 import com.afunx.ble.device.BleDevice;
+import com.afunx.ble.utils.BleDeviceUtils;
 import com.afunx.ble.utils.BleUtils;
 import com.afunx.ble.utils.WifiUtils;
 
@@ -11,11 +12,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -28,25 +31,26 @@ public class MainActivity extends Activity {
 	private ListView mListView;
 	private BleDeviceAdapter mBleDeviceAdapter;
 	private LeScanCallback mLeScanCallback;
+	private Handler mHandler;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mHandler = new Handler();
 		// it is brutally sometimes
 		BleUtils.openBleBrutally();
 		WifiUtils.openWifiBrutally(getApplicationContext());
 		init();
+		doRefresh();
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		startLeScan();
 	}
 	
 	@Override
 	protected void onPause() {
-		stopLeScan();
 		super.onPause();
 	}
 	
@@ -85,34 +89,42 @@ public class MainActivity extends Activity {
 		mLeScanCallback = new LeScanCallback() {
 			@Override
 			public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-				BleDevice bleDevice = new BleDevice();
-				bleDevice.setBluetoothDevice(device);
-				bleDevice.setRssi(rssi);
-				bleDevice.setScanRecord(scanRecord);
-				mBleDeviceAdapter.addOrUpdateDevice(bleDevice);
-				mBleDeviceAdapter.notifyDataSetChanged();
+				if(BleDeviceUtils.isEspBluetoothDevice(device)) {
+					BleDevice bleDevice = new BleDevice();
+					bleDevice.setBluetoothDevice(device);
+					bleDevice.setRssi(rssi);
+					bleDevice.setScanRecord(scanRecord);
+					mBleDeviceAdapter.addOrUpdateDevice(bleDevice);
+					mBleDeviceAdapter.notifyDataSetChanged();
+				}
 			}
 		};
 		
 	}
 
 	private void doRefresh() {
+		final long interval = 5000;
+		mSwipeRefreshLayout.setRefreshing(true);
+		Toast.makeText(this, R.string.scaning, Toast.LENGTH_LONG).show();
 		// clear ble devices in UI
 		mBleDeviceAdapter.clear();
-		// stop swipe refresh refreshing
-		mSwipeRefreshLayout.setRefreshing(false);
-	}
-	
-	private void startLeScan() {
 		new Thread() {
-			public void run(){
+			public void run() {
 				BleUtils.startLeScan(mLeScanCallback);
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException ignore) {
+				}
+				BleUtils.stopLeScan(mLeScanCallback);
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						// stop swipe refresh refreshing
+						mSwipeRefreshLayout.setRefreshing(false);
+					}
+				});
 			}
 		}.start();
-	}
-	
-	private void stopLeScan() {
-		BleUtils.stopLeScan(mLeScanCallback);
 	}
 	
 }

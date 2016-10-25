@@ -3,7 +3,7 @@
     <string name="app_name">BLE WIFI DEMO V0.8.2</string>
 
     <!-- operation steps -->
-    <string name="operation_step_0">请选择一个蓝牙设备</string>
+    <string name="operation_step_0">请选择一个蓝牙设备(下拉可刷新)</string>
 
     <!-- others -->
     <string name="device_name_unknown_device">未知设备</string>
